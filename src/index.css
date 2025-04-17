@@ -1,0 +1,220 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* React Quill Editor Styles */
+.ql-editor {
+  min-height: 200px;
+  font-family: 'Inter', sans-serif;
+}
+
+.ql-snow .ql-editor h1,
+.ql-snow .ql-editor h2,
+.ql-snow .ql-editor h3 {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.ql-snow .ql-editor h1 {
+  font-size: 1.75rem;
+}
+
+.ql-snow .ql-editor h2 {
+  font-size: 1.5rem;
+}
+
+.ql-snow .ql-editor h3 {
+  font-size: 1.25rem;
+}
+
+.ql-snow .ql-editor p {
+  margin-bottom: 1rem;
+}
+
+.ql-snow .ql-editor ul,
+.ql-snow .ql-editor ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.ql-snow .ql-editor li {
+  margin-bottom: 0.25rem;
+}
+
+.ql-snow .ql-editor a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Dark mode support for React Quill */
+[data-theme="dark"] .ql-snow,
+[data-theme="dark"] .ql-toolbar,
+[data-theme="dark"] .ql-container {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+[data-theme="dark"] .ql-toolbar .ql-stroke {
+  stroke: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="dark"] .ql-toolbar .ql-fill {
+  fill: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="dark"] .ql-snow .ql-picker {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+[data-theme="dark"] .ql-snow .ql-editor {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+/* Global Animations & Transitions */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.slide-up {
+  animation: slideUp 0.5s ease-in-out;
+}
+
+.slide-down {
+  animation: slideDown 0.5s ease-in-out;
+}
+
+.scale-in {
+  animation: scaleIn 0.3s ease-in-out;
+}
+
+.bounce {
+  animation: bounce 1s infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* For dark mode */
+[data-theme="dark"] ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Mobile-Friendly Enhancements */
+@media (max-width: 767px) {
+  .ql-editor {
+    min-height: 150px;
+  }
+  
+  /* Increase touch targets for mobile */
+  button, 
+  [role="button"], 
+  a, 
+  input[type="checkbox"],
+  input[type="radio"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better spacing for mobile forms */
+  .MuiTextField-root,
+  .MuiSelect-root,
+  .MuiFormControl-root {
+    margin-bottom: 16px !important;
+  }
+}
+
+/* Page transition effects */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transition: opacity 300ms;
+}

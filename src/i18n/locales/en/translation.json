@@ -1,0 +1,458 @@
+{
+  "appName": "Sqordia",
+  "appTagline": "AI-Powered Business Plan Platform",
+  
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "next": "Next",
+    "back": "Back",
+    "continue": "Continue",
+    "loading": "Loading",
+    "search": "Search",
+    "filter": "Filter",
+    "add": "Add",
+    "generate": "Generate",
+    "view": "View",
+    "export": "Export",
+    "share": "Share",
+    "confirm": "Confirm",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "admin": "Admin",
+    "name": "Name",
+    "or": "OR"
+  },
+  
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "pricing": "Pricing",
+    "dashboard": "Dashboard",
+    "questionnaire": "Questionnaire",
+    "businessPlan": "Business Plan",
+    "subscription": "Subscription",
+    "adminPanel": "Admin Panel",
+    "profile": "Profile",
+    "logout": "Logout",
+    "help": "Help",
+    "notifications": "Notifications"
+  },
+  
+  "footer": {
+    "product": "Product",
+    "features": "Features",
+    "pricing": "Pricing",
+    "templates": "Templates",
+    "company": "Company",
+    "about": "About Us",
+    "blog": "Blog",
+    "careers": "Careers",
+    "resources": "Resources",
+    "help": "Help Center",
+    "support": "Support",
+    "contact": "Contact",
+    "legal": "Legal",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookies Policy",
+    "allRightsReserved": "All rights reserved"
+  },
+  
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "rememberMe": "Remember me",
+    "forgotPassword": "Forgot password?",
+    "createAccount": "Create an Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "resetPassword": "Reset Password",
+    "resetPasswordInstructions": "Enter your email address and we'll send you instructions to reset your password.",
+    "passwordResetSent": "Password reset instructions have been sent to your email.",
+    "passwordResetNote": "Please check your inbox and follow the instructions to reset your password. If you don't receive an email within a few minutes, check your spam folder.",
+    "backToLogin": "Back to Login",
+    "invalidCredentials": "Invalid email or password",
+    "requiredField": "This field is required",
+    "invalidEmail": "Please enter a valid email address",
+    "passwordRequirements": "Password must be at least 8 characters with uppercase, lowercase, number and special character",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "accountType": "Account Type",
+    "individual": "Individual",
+    "consultant": "Consultant",
+    "nonProfit": "Non-profit (OBNL)",
+    "administrator": "Administrator",
+    "companyName": "Company Name",
+    "jobTitle": "Job Title",
+    "almostThere": "Almost there! Review your information and complete registration.",
+    "accountSummary": "Account Summary",
+    "termsAgreement": "By clicking \"Complete Registration\", you agree to our Terms of Service and Privacy Policy.",
+    "completeRegistration": "Complete Registration",
+    "demoCredentials": "Demo credentials:",
+    "admin": "Admin",
+    "user": "User",
+    "sendResetInstructions": "Send Reset Instructions",
+    "rememberPassword": "Remember your password? Sign in",
+    "welcomeBack": "Welcome back! Please enter your credentials below.",
+    "steps": {
+      "account": "Account Details",
+      "personal": "Personal Info",
+      "complete": "Complete"
+    },
+    "startWithSqordia": "Get started with Sqordia today."
+  },
+  
+  "home": {
+    "hero": {
+      "title": "Create Impressive Business Plans in Minutes",
+      "subtitle": "Our AI-powered platform helps entrepreneurs, consultants, and business owners craft professional business plans with ease.",
+      "getStarted": "Get Started Free",
+      "learnMore": "Learn More",
+      "benefit1": "No credit card required",
+      "benefit2": "Cancel anytime",
+      "benefit3": "AI-powered suggestions"
+    },
+    "stats": {
+      "users": "Active Users",
+      "plans": "Business Plans Created",
+      "satisfaction": "Customer Satisfaction",
+      "countries": "Countries Worldwide"
+    },
+    "features": {
+      "title": "Powerful Features to Transform Your Business",
+      "subtitle": "Our comprehensive platform offers everything you need to create a winning business plan"
+    },
+    "howItWorks": {
+      "title": "How Sqordia Works",
+      "subtitle": "Create your business plan in four simple steps",
+      "step1": {
+        "title": "Choose a Template",
+        "description": "Select from industry-specific templates designed by business experts to match your needs."
+      },
+      "step2": {
+        "title": "Answer Simple Questions",
+        "description": "Our guided questionnaire helps you articulate your business vision clearly and comprehensively."
+      },
+      "step3": {
+        "title": "Generate with AI",
+        "description": "Our powerful AI creates professional content for each section based on your responses."
+      },
+      "step4": {
+        "title": "Customize & Export",
+        "description": "Edit your plan as needed, then export in multiple formats to share with stakeholders."
+      },
+      "startNow": "Start Now"
+    },
+    "testimonials": {
+      "title": "What Our Customers Say",
+      "subtitle": "Join thousands of satisfied entrepreneurs who have transformed their business planning process"
+    },
+    "pricing": {
+      "title": "Simple, Transparent Pricing",
+      "subtitle": "Choose the plan that fits your business needs",
+      "mostPopular": "Most Popular",
+      "forever": "forever",
+      "month": "month"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Find answers to common questions about our platform",
+      "stillHaveQuestions": "Still have questions?",
+      "contactSupport": "Contact Support"
+    },
+    "cta": {
+      "title": "Ready to Create Your Business Plan?",
+      "subtitle": "Join thousands of entrepreneurs who have successfully launched and grown their businesses with Sqordia.",
+      "button": "Start Creating Today",
+      "noCreditCard": "No credit card required to get started"
+    },
+    "partners": {
+      "title": "Trusted by entrepreneurs featured in"
+    }
+  },
+  
+  "dashboard": {
+    "title": "Dashboard",
+    "newBusinessPlan": "New Business Plan",
+    "totalBusinessPlans": "Total Business Plans",
+    "completedPlans": "Completed Plans",
+    "aiGenerations": "AI Generations",
+    "averageCompletion": "Average Completion",
+    "yourBusinessPlans": "Your Business Plans",
+    "createNewBusinessPlan": "Create New Business Plan",
+    "startFromScratch": "Start from scratch or use a template",
+    "lastUpdated": "Last updated",
+    "viewPlan": "View Plan",
+    "continue": "Continue",
+    "recentActivity": "Recent Activity",
+    "activity": "Activity",
+    "businessPlan": "Business Plan",
+    "description": "Description",
+    "date": "Date",
+    "edited": "Edited",
+    "aiGenerated": "AI Generated",
+    "questionnaire": "Questionnaire",
+    "exported": "Exported"
+  },
+  
+  "businessPlan": {
+    "title": "Business Plan Editor",
+    "saving": "Saving...",
+    "generateWithAI": "Generate with AI",
+    "preview": "Preview",
+    "edit": "Edit",
+    "save": "Save",
+    "planSaved": "Business plan saved successfully",
+    "previousSection": "Previous Section",
+    "nextSection": "Next Section",
+    "aiDialogTitle": "Generate with AI",
+    "aiDialogDesc": "Let our AI assistant generate content for the section of your business plan. The AI will use information from your questionnaire responses to create tailored content.",
+    "aiDialogReview": "You can review and edit the AI-generated content before saving it.",
+    "aiDialogWarning": "AI-generated content is a starting point. Always review and customize to ensure accuracy and alignment with your business vision.",
+    "generating": "Generating...",
+    "generateContent": "Generate Content",
+    "exportDialogTitle": "Export Business Plan",
+    "exportDialogDesc": "Choose a format to export your business plan.",
+    "exportFormat": "Export Format",
+    "sectionsToInclude": "Sections to Include",
+    "exporting": "Exporting...",
+    "shareDialogTitle": "Share Business Plan",
+    "shareDialogDesc": "Share your business plan with team members, investors, or advisors.",
+    "permission": "Permission",
+    "viewOnly": "View Only",
+    "canComment": "Can Comment",
+    "canEdit": "Can Edit",
+    "sharing": "Sharing...",
+    "sections": {
+      "executiveSummary": "Executive Summary",
+      "companyOverview": "Company Overview",
+      "product": "Product & Services",
+      "marketAnalysis": "Market Analysis",
+      "strategy": "Business Strategy",
+      "team": "Management & Team",
+      "financials": "Financial Plan",
+      "appendix": "Appendix"
+    }
+  },
+  
+  "questionnaire": {
+    "title": "Business Plan Questionnaire",
+    "newBusinessPlan": "New Business Plan",
+    "chooseTemplate": "Choose a Business Plan Template",
+    "templateDesc": "Select a template that best fits your business type to get started. You can customize it later.",
+    "continueWithTemplate": "Continue with This Template",
+    "saved": "Saved",
+    "errorSaving": "Error saving",
+    "exit": "Exit",
+    "exitConfirmation": "Exit Questionnaire?",
+    "exitDesc": "Your progress has been saved automatically. You can return to continue this questionnaire at any time.",
+    "exitToDashboard": "Exit to Dashboard",
+    "sections": {
+      "basics": {
+        "title": "Business Basics",
+        "description": "Let's start with the fundamentals of your business"
+      },
+      "product": {
+        "title": "Products & Services",
+        "description": "Tell us about what your business offers to customers"
+      },
+      "market": {
+        "title": "Market Analysis",
+        "description": "Understand your market, customers, and competition"
+      },
+      "strategy": {
+        "title": "Business Strategy",
+        "description": "Define your goals and how you plan to achieve them"
+      },
+      "financials": {
+        "title": "Financial Projections",
+        "description": "Understand the financial aspects of your business"
+      }
+    }
+  },
+  
+  "profile": {
+    "title": "Profile Settings",
+    "subtitle": "Manage your account settings and preferences",
+    "tabs": {
+      "profile": "Profile",
+      "security": "Security",
+      "notifications": "Notifications"
+    },
+    "editProfile": "Edit Profile",
+    "saveChanges": "Save Changes",
+    "personalInfo": "Personal Information",
+    "bio": "Bio",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "passwordChanged": "Password changed successfully",
+    "twoFactorAuth": "Two-Factor Authentication",
+    "twoFactorEnabled": "Two-factor authentication is enabled",
+    "twoFactorDisabled": "Two-factor authentication is disabled",
+    "enable": "Enable",
+    "disable": "Disable",
+    "sessions": "Sessions",
+    "sessionTimeout": "Session Timeout",
+    "sessionTimeoutDesc": "You will be automatically logged out after this period of inactivity",
+    "lastPasswordChange": "Last password change",
+    "signOutAllDevices": "Sign Out All Devices",
+    "dangerZone": "Danger Zone",
+    "deleteAccount": "Delete Account",
+    "deleteAccountWarning": "Once you delete your account, there is no going back. Please be certain.",
+    "deleteConfirmation": "Are you sure you want to delete your account? This action cannot be undone, and all your data will be permanently removed.",
+    "typeToConfirm": "To confirm, please type DELETE below:",
+    "notificationSettings": "Notification Settings",
+    "emailNotifications": "Email Notifications",
+    "receiveEmails": "Receive email notifications",
+    "receiveEmailsFor": "Receive emails for:",
+    "accountUpdates": "Account updates and security alerts",
+    "marketing": "Marketing and promotional offers",
+    "newsletter": "Weekly newsletter and tips",
+    "inAppNotifications": "In-App Notifications",
+    "receiveInApp": "Receive in-app notifications",
+    "smsNotifications": "SMS Notifications",
+    "receiveSMS": "Receive SMS notifications",
+    "standardRates": "Standard message rates may apply",
+    "savePreferences": "Save Notification Preferences"
+  },
+  
+  "subscription": {
+    "title": "Subscription Management",
+    "subtitle": "Manage your subscription plan and billing information",
+    "tabs": {
+      "plans": "Plans",
+      "billingHistory": "Billing History",
+      "paymentMethods": "Payment Methods"
+    },
+    "currentPlan": "Your current plan:",
+    "mostPopular": "Most Popular",
+    "month": "month",
+    "forever": "forever",
+    "free": "Free",
+    "professional": "Professional",
+    "enterprise": "Enterprise",
+    "cancelSubscription": "Cancel Subscription",
+    "upgradeDialog": {
+      "title": "Upgrade Subscription",
+      "description": "You're about to upgrade to the {plan} plan. This will give you access to additional features and benefits.",
+      "details": "Plan Details:",
+      "price": "Price:",
+      "billing": "Billing:",
+      "billingDesc": "You will be billed immediately and then on a {period}ly basis.",
+      "confirmUpgrade": "Confirm Upgrade"
+    },
+    "cancelDialog": {
+      "title": "Cancel Subscription",
+      "description": "Are you sure you want to cancel your subscription? You will lose access to premium features at the end of your current billing period.",
+      "warning": "Any business plans you've created will remain accessible, but you won't be able to use premium features after cancellation.",
+      "keepSubscription": "Keep Subscription",
+      "cancelSubscription": "Cancel Subscription"
+    },
+    "billing": {
+      "invoice": "Invoice",
+      "date": "Date",
+      "amount": "Amount",
+      "plan": "Plan",
+      "status": "Status",
+      "actions": "Actions",
+      "noBillingHistory": "No Billing History",
+      "billingHistoryDesc": "Your billing history will appear here once you subscribe to a paid plan."
+    },
+    "payment": {
+      "noPaymentMethods": "No Payment Methods",
+      "noPaymentMethodsDesc": "You haven't added any payment methods yet.",
+      "addPaymentMethod": "Add Payment Method"
+    }
+  },
+  
+  "admin": {
+    "title": "Admin Dashboard",
+    "subtitle": "Manage users, view statistics, and monitor platform activity",
+    "stats": {
+      "totalUsers": "Total Users",
+      "activeUsers": "Active Users",
+      "paidSubscriptions": "Paid Subscriptions",
+      "businessPlans": "Business Plans"
+    },
+    "tabs": {
+      "users": "Users",
+      "analytics": "Analytics",
+      "security": "Security"
+    },
+    "users": {
+      "searchUsers": "Search users...",
+      "filter": "Filter",
+      "addUser": "Add User",
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "subscription": "Subscription",
+      "lastLogin": "Last Login",
+      "actions": "Actions",
+      "editUser": "Edit User",
+      "changeRole": "Change Role",
+      "viewDetails": "View Details",
+      "suspendUser": "Suspend User",
+      "activateUser": "Activate User",
+      "deleteUser": "Delete User",
+      "deleteUserConfirm": "Are you sure you want to delete this user? This action cannot be undone, and all of the user's data will be permanently removed."
+    },
+    "analytics": {
+      "userRoles": "User Roles Distribution",
+      "subscriptionTypes": "Subscription Types",
+      "userGrowth": "User Growth Over Time"
+    },
+    "security": {
+      "overview": "Security Overview",
+      "securityStatus": "Platform security status:",
+      "secure": "Secure",
+      "lastScan": "Last security scan:",
+      "activeSessions": "Active login sessions:",
+      "failedAttempts": "Failed login attempts (24h):",
+      "runScan": "Run Security Scan",
+      "settings": "Security Settings",
+      "passwordPolicy": "Password Policy",
+      "basic": "Basic (8+ characters)",
+      "medium": "Medium (8+ chars with numbers)",
+      "strong": "Strong (8+ chars with numbers, symbols, mixed case)",
+      "require2FA": "Require 2FA for administrators",
+      "require2FAAll": "Require 2FA for all users",
+      "blockSuspicious": "Block suspicious login attempts",
+      "saveSettings": "Save Settings",
+      "alerts": "Recent Security Alerts",
+      "alert": "Alert",
+      "user": "User",
+      "ipAddress": "IP Address",
+      "dateTime": "Date/Time",
+      "status": "Status",
+      "resolved": "Resolved",
+      "investigating": "Investigating",
+      "normal": "Normal"
+    }
+  },
+  
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "viewAll": "View all",
+    "noNotifications": "No notifications",
+    "allCaughtUp": "You're all caught up!"
+  }
+}

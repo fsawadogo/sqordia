@@ -1,0 +1,458 @@
+{
+  "appName": "Sqordia",
+  "appTagline": "Plateforme de Plan d'Affaires Propulsée par l'IA",
+  
+  "common": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "next": "Suivant",
+    "back": "Retour",
+    "continue": "Continuer",
+    "loading": "Chargement",
+    "search": "Rechercher",
+    "filter": "Filtrer",
+    "add": "Ajouter",
+    "generate": "Générer",
+    "view": "Voir",
+    "export": "Exporter",
+    "share": "Partager",
+    "confirm": "Confirmer",
+    "success": "Succès",
+    "error": "Erreur",
+    "warning": "Avertissement",
+    "info": "Information",
+    "settings": "Paramètres",
+    "profile": "Profil",
+    "logout": "Déconnexion",
+    "dashboard": "Tableau de Bord",
+    "admin": "Admin",
+    "name": "Nom",
+    "or": "OU"
+  },
+  
+  "nav": {
+    "home": "Accueil",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "dashboard": "Tableau de Bord",
+    "questionnaire": "Questionnaire",
+    "businessPlan": "Plan d'Affaires",
+    "subscription": "Abonnement",
+    "adminPanel": "Panneau d'Administration",
+    "profile": "Profil",
+    "logout": "Déconnexion",
+    "help": "Aide",
+    "notifications": "Notifications"
+  },
+  
+  "footer": {
+    "product": "Produit",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "templates": "Modèles",
+    "company": "Entreprise",
+    "about": "À Propos",
+    "blog": "Blog",
+    "careers": "Carrières",
+    "resources": "Ressources",
+    "help": "Centre d'Aide",
+    "support": "Support",
+    "contact": "Contact",
+    "legal": "Mentions Légales",
+    "terms": "Conditions d'Utilisation",
+    "privacy": "Politique de Confidentialité",
+    "cookies": "Politique des Cookies",
+    "allRightsReserved": "Tous droits réservés"
+  },
+  
+  "auth": {
+    "signIn": "Se Connecter",
+    "signUp": "S'inscrire",
+    "email": "Adresse Email",
+    "password": "Mot de Passe",
+    "confirmPassword": "Confirmer le Mot de Passe",
+    "rememberMe": "Se souvenir de moi",
+    "forgotPassword": "Mot de passe oublié?",
+    "createAccount": "Créer un Compte",
+    "alreadyHaveAccount": "Vous avez déjà un compte?",
+    "dontHaveAccount": "Vous n'avez pas de compte?",
+    "resetPassword": "Réinitialiser le Mot de Passe",
+    "resetPasswordInstructions": "Entrez votre adresse email et nous vous enverrons des instructions pour réinitialiser votre mot de passe.",
+    "passwordResetSent": "Les instructions de réinitialisation du mot de passe ont été envoyées à votre email.",
+    "passwordResetNote": "Veuillez vérifier votre boîte de réception et suivre les instructions pour réinitialiser votre mot de passe. Si vous ne recevez pas d'email dans les prochaines minutes, vérifiez votre dossier spam.",
+    "backToLogin": "Retour à la Connexion",
+    "invalidCredentials": "Email ou mot de passe invalide",
+    "requiredField": "Ce champ est requis",
+    "invalidEmail": "Veuillez entrer une adresse email valide",
+    "passwordRequirements": "Le mot de passe doit comporter au moins 8 caractères avec des majuscules, des minuscules, un chiffre et un caractère spécial",
+    "passwordMinLength": "Le mot de passe doit comporter au moins 6 caractères",
+    "passwordsDoNotMatch": "Les mots de passe ne correspondent pas",
+    "firstName": "Prénom",
+    "lastName": "Nom",
+    "accountType": "Type de Compte",
+    "individual": "Individuel",
+    "consultant": "Consultant",
+    "nonProfit": "Organisation à but non lucratif (OBNL)",
+    "administrator": "Administrateur",
+    "companyName": "Nom de l'Entreprise",
+    "jobTitle": "Titre du Poste",
+    "almostThere": "Vous y êtes presque! Vérifiez vos informations et complétez l'inscription.",
+    "accountSummary": "Résumé du Compte",
+    "termsAgreement": "En cliquant sur \"Terminer l'Inscription\", vous acceptez nos Conditions d'Utilisation et notre Politique de Confidentialité.",
+    "completeRegistration": "Terminer l'Inscription",
+    "demoCredentials": "Identifiants de démonstration:",
+    "admin": "Admin",
+    "user": "Utilisateur",
+    "sendResetInstructions": "Envoyer les Instructions de Réinitialisation",
+    "rememberPassword": "Vous vous souvenez de votre mot de passe? Connectez-vous",
+    "welcomeBack": "Bienvenue! Veuillez entrer vos identifiants ci-dessous.",
+    "steps": {
+      "account": "Détails du Compte",
+      "personal": "Informations Personnelles",
+      "complete": "Finalisation"
+    },
+    "startWithSqordia": "Commencez avec Sqordia dès aujourd'hui."
+  },
+  
+  "home": {
+    "hero": {
+      "title": "Créez des Plans d'Affaires Impressionnants en Quelques Minutes",
+      "subtitle": "Notre plateforme propulsée par l'IA aide les entrepreneurs, consultants et propriétaires d'entreprises à élaborer facilement des plans d'affaires professionnels.",
+      "getStarted": "Commencer Gratuitement",
+      "learnMore": "En Savoir Plus",
+      "benefit1": "Aucune carte de crédit requise",
+      "benefit2": "Annulez à tout moment",
+      "benefit3": "Suggestions alimentées par l'IA"
+    },
+    "stats": {
+      "users": "Utilisateurs Actifs",
+      "plans": "Plans d'Affaires Créés",
+      "satisfaction": "Satisfaction Client",
+      "countries": "Pays à Travers le Monde"
+    },
+    "features": {
+      "title": "Fonctionnalités Puissantes pour Transformer Votre Entreprise",
+      "subtitle": "Notre plateforme complète offre tout ce dont vous avez besoin pour créer un plan d'affaires gagnant"
+    },
+    "howItWorks": {
+      "title": "Comment Fonctionne Sqordia",
+      "subtitle": "Créez votre plan d'affaires en quatre étapes simples",
+      "step1": {
+        "title": "Choisissez un Modèle",
+        "description": "Sélectionnez parmi des modèles spécifiques à votre industrie, conçus par des experts en affaires pour répondre à vos besoins."
+      },
+      "step2": {
+        "title": "Répondez à des Questions Simples",
+        "description": "Notre questionnaire guidé vous aide à articuler clairement et complètement la vision de votre entreprise."
+      },
+      "step3": {
+        "title": "Générez avec l'IA",
+        "description": "Notre puissante IA crée un contenu professionnel pour chaque section basé sur vos réponses."
+      },
+      "step4": {
+        "title": "Personnalisez et Exportez",
+        "description": "Modifiez votre plan selon vos besoins, puis exportez-le dans plusieurs formats pour le partager avec vos parties prenantes."
+      },
+      "startNow": "Commencer Maintenant"
+    },
+    "testimonials": {
+      "title": "Ce que Disent Nos Clients",
+      "subtitle": "Rejoignez des milliers d'entrepreneurs satisfaits qui ont transformé leur processus de planification d'entreprise"
+    },
+    "pricing": {
+      "title": "Tarification Simple et Transparente",
+      "subtitle": "Choisissez le forfait qui correspond aux besoins de votre entreprise",
+      "mostPopular": "Le Plus Populaire",
+      "forever": "pour toujours",
+      "month": "mois"
+    },
+    "faq": {
+      "title": "Questions Fréquemment Posées",
+      "subtitle": "Trouvez des réponses aux questions courantes sur notre plateforme",
+      "stillHaveQuestions": "Vous avez encore des questions?",
+      "contactSupport": "Contacter le Support"
+    },
+    "cta": {
+      "title": "Prêt à Créer Votre Plan d'Affaires?",
+      "subtitle": "Rejoignez des milliers d'entrepreneurs qui ont lancé et développé avec succès leur entreprise avec Sqordia.",
+      "button": "Commencez à Créer Aujourd'hui",
+      "noCreditCard": "Aucune carte de crédit requise pour commencer"
+    },
+    "partners": {
+      "title": "Approuvé par des entrepreneurs présentés dans"
+    }
+  },
+  
+  "dashboard": {
+    "title": "Tableau de Bord",
+    "newBusinessPlan": "Nouveau Plan d'Affaires",
+    "totalBusinessPlans": "Total des Plans d'Affaires",
+    "completedPlans": "Plans Complétés",
+    "aiGenerations": "Générations IA",
+    "averageCompletion": "Complétion Moyenne",
+    "yourBusinessPlans": "Vos Plans d'Affaires",
+    "createNewBusinessPlan": "Créer un Nouveau Plan d'Affaires",
+    "startFromScratch": "Commencer de zéro ou utiliser un modèle",
+    "lastUpdated": "Dernière mise à jour",
+    "viewPlan": "Voir le Plan",
+    "continue": "Continuer",
+    "recentActivity": "Activité Récente",
+    "activity": "Activité",
+    "businessPlan": "Plan d'Affaires",
+    "description": "Description",
+    "date": "Date",
+    "edited": "Modifié",
+    "aiGenerated": "Généré par IA",
+    "questionnaire": "Questionnaire",
+    "exported": "Exporté"
+  },
+  
+  "businessPlan": {
+    "title": "Éditeur de Plan d'Affaires",
+    "saving": "Enregistrement...",
+    "generateWithAI": "Générer avec l'IA",
+    "preview": "Aperçu",
+    "edit": "Modifier",
+    "save": "Enregistrer",
+    "planSaved": "Plan d'affaires enregistré avec succès",
+    "previousSection": "Section Précédente",
+    "nextSection": "Section Suivante",
+    "aiDialogTitle": "Générer avec l'IA",
+    "aiDialogDesc": "Laissez notre assistant IA générer du contenu pour la section de votre plan d'affaires. L'IA utilisera les informations de vos réponses au questionnaire pour créer un contenu sur mesure.",
+    "aiDialogReview": "Vous pouvez réviser et modifier le contenu généré par l'IA avant de l'enregistrer.",
+    "aiDialogWarning": "Le contenu généré par l'IA est un point de départ. Passez toujours en revue et personnalisez pour assurer la précision et l'alignement avec la vision de votre entreprise.",
+    "generating": "Génération...",
+    "generateContent": "Générer le Contenu",
+    "exportDialogTitle": "Exporter le Plan d'Affaires",
+    "exportDialogDesc": "Choisissez un format pour exporter votre plan d'affaires.",
+    "exportFormat": "Format d'Exportation",
+    "sectionsToInclude": "Sections à Inclure",
+    "exporting": "Exportation...",
+    "shareDialogTitle": "Partager le Plan d'Affaires",
+    "shareDialogDesc": "Partagez votre plan d'affaires avec des membres de l'équipe, des investisseurs ou des conseillers.",
+    "permission": "Autorisation",
+    "viewOnly": "Lecture Seule",
+    "canComment": "Peut Commenter",
+    "canEdit": "Peut Modifier",
+    "sharing": "Partage...",
+    "sections": {
+      "executiveSummary": "Résumé Exécutif",
+      "companyOverview": "Aperçu de l'Entreprise",
+      "product": "Produits & Services",
+      "marketAnalysis": "Analyse de Marché",
+      "strategy": "Stratégie d'Entreprise",
+      "team": "Direction & Équipe",
+      "financials": "Plan Financier",
+      "appendix": "Annexe"
+    }
+  },
+  
+  "questionnaire": {
+    "title": "Questionnaire de Plan d'Affaires",
+    "newBusinessPlan": "Nouveau Plan d'Affaires",
+    "chooseTemplate": "Choisir un Modèle de Plan d'Affaires",
+    "templateDesc": "Sélectionnez un modèle qui correspond le mieux à votre type d'entreprise pour commencer. Vous pourrez le personnaliser plus tard.",
+    "continueWithTemplate": "Continuer avec ce Modèle",
+    "saved": "Enregistré",
+    "errorSaving": "Erreur d'enregistrement",
+    "exit": "Quitter",
+    "exitConfirmation": "Quitter le Questionnaire?",
+    "exitDesc": "Votre progression a été enregistrée automatiquement. Vous pouvez revenir pour continuer ce questionnaire à tout moment.",
+    "exitToDashboard": "Retour au Tableau de Bord",
+    "sections": {
+      "basics": {
+        "title": "Bases de l'Entreprise",
+        "description": "Commençons par les fondamentaux de votre entreprise"
+      },
+      "product": {
+        "title": "Produits & Services",
+        "description": "Parlez-nous de ce que votre entreprise offre aux clients"
+      },
+      "market": {
+        "title": "Analyse de Marché",
+        "description": "Comprendre votre marché, vos clients et votre concurrence"
+      },
+      "strategy": {
+        "title": "Stratégie d'Entreprise",
+        "description": "Définissez vos objectifs et comment vous comptez les atteindre"
+      },
+      "financials": {
+        "title": "Projections Financières",
+        "description": "Comprendre les aspects financiers de votre entreprise"
+      }
+    }
+  },
+  
+  "profile": {
+    "title": "Paramètres du Profil",
+    "subtitle": "Gérez vos paramètres de compte et vos préférences",
+    "tabs": {
+      "profile": "Profil",
+      "security": "Sécurité",
+      "notifications": "Notifications"
+    },
+    "editProfile": "Modifier le Profil",
+    "saveChanges": "Enregistrer les Modifications",
+    "personalInfo": "Informations Personnelles",
+    "bio": "Biographie",
+    "changePassword": "Changer le Mot de Passe",
+    "currentPassword": "Mot de Passe Actuel",
+    "newPassword": "Nouveau Mot de Passe",
+    "confirmNewPassword": "Confirmer le Nouveau Mot de Passe",
+    "passwordChanged": "Mot de passe changé avec succès",
+    "twoFactorAuth": "Authentification à Deux Facteurs",
+    "twoFactorEnabled": "L'authentification à deux facteurs est activée",
+    "twoFactorDisabled": "L'authentification à deux facteurs est désactivée",
+    "enable": "Activer",
+    "disable": "Désactiver",
+    "sessions": "Sessions",
+    "sessionTimeout": "Expiration de Session",
+    "sessionTimeoutDesc": "Vous serez automatiquement déconnecté après cette période d'inactivité",
+    "lastPasswordChange": "Dernier changement de mot de passe",
+    "signOutAllDevices": "Déconnecter Tous les Appareils",
+    "dangerZone": "Zone Dangereuse",
+    "deleteAccount": "Supprimer le Compte",
+    "deleteAccountWarning": "Une fois que vous supprimez votre compte, il n'y a pas de retour en arrière. Soyez certain.",
+    "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer votre compte? Cette action ne peut pas être annulée, et toutes vos données seront définitivement supprimées.",
+    "typeToConfirm": "Pour confirmer, veuillez taper SUPPRIMER ci-dessous:",
+    "notificationSettings": "Paramètres de Notification",
+    "emailNotifications": "Notifications par Email",
+    "receiveEmails": "Recevoir des notifications par email",
+    "receiveEmailsFor": "Recevoir des emails pour:",
+    "accountUpdates": "Mises à jour du compte et alertes de sécurité",
+    "marketing": "Marketing et offres promotionnelles",
+    "newsletter": "Newsletter hebdomadaire et astuces",
+    "inAppNotifications": "Notifications dans l'Application",
+    "receiveInApp": "Recevoir des notifications dans l'application",
+    "smsNotifications": "Notifications SMS",
+    "receiveSMS": "Recevoir des notifications SMS",
+    "standardRates": "Des tarifs standard peuvent s'appliquer",
+    "savePreferences": "Enregistrer les Préférences de Notification"
+  },
+  
+  "subscription": {
+    "title": "Gestion de l'Abonnement",
+    "subtitle": "Gérez votre plan d'abonnement et vos informations de facturation",
+    "tabs": {
+      "plans": "Plans",
+      "billingHistory": "Historique de Facturation",
+      "paymentMethods": "Méthodes de Paiement"
+    },
+    "currentPlan": "Votre plan actuel:",
+    "mostPopular": "Le Plus Populaire",
+    "month": "mois",
+    "forever": "pour toujours",
+    "free": "Gratuit",
+    "professional": "Professionnel",
+    "enterprise": "Entreprise",
+    "cancelSubscription": "Annuler l'Abonnement",
+    "upgradeDialog": {
+      "title": "Mise à Niveau de l'Abonnement",
+      "description": "Vous êtes sur le point de passer au plan {plan}. Cela vous donnera accès à des fonctionnalités et avantages supplémentaires.",
+      "details": "Détails du Plan:",
+      "price": "Prix:",
+      "billing": "Facturation:",
+      "billingDesc": "Vous serez facturé immédiatement, puis sur une base {period}suelle.",
+      "confirmUpgrade": "Confirmer la Mise à Niveau"
+    },
+    "cancelDialog": {
+      "title": "Annuler l'Abonnement",
+      "description": "Êtes-vous sûr de vouloir annuler votre abonnement? Vous perdrez l'accès aux fonctionnalités premium à la fin de votre période de facturation actuelle.",
+      "warning": "Tous les plans d'affaires que vous avez créés resteront accessibles, mais vous ne pourrez pas utiliser les fonctionnalités premium après l'annulation.",
+      "keepSubscription": "Conserver l'Abonnement",
+      "cancelSubscription": "Annuler l'Abonnement"
+    },
+    "billing": {
+      "invoice": "Facture",
+      "date": "Date",
+      "amount": "Montant",
+      "plan": "Plan",
+      "status": "Statut",
+      "actions": "Actions",
+      "noBillingHistory": "Aucun Historique de Facturation",
+      "billingHistoryDesc": "Votre historique de facturation apparaîtra ici une fois que vous serez abonné à un plan payant."
+    },
+    "payment": {
+      "noPaymentMethods": "Aucune Méthode de Paiement",
+      "noPaymentMethodsDesc": "Vous n'avez pas encore ajouté de méthodes de paiement.",
+      "addPaymentMethod": "Ajouter une Méthode de Paiement"
+    }
+  },
+  
+  "admin": {
+    "title": "Tableau de Bord Administrateur",
+    "subtitle": "Gérez les utilisateurs, consultez les statistiques et surveillez l'activité de la plateforme",
+    "stats": {
+      "totalUsers": "Total des Utilisateurs",
+      "activeUsers": "Utilisateurs Actifs",
+      "paidSubscriptions": "Abonnements Payants",
+      "businessPlans": "Plans d'Affaires"
+    },
+    "tabs": {
+      "users": "Utilisateurs",
+      "analytics": "Analyses",
+      "security": "Sécurité"
+    },
+    "users": {
+      "searchUsers": "Rechercher des utilisateurs...",
+      "filter": "Filtrer",
+      "addUser": "Ajouter un Utilisateur",
+      "name": "Nom",
+      "email": "Email",
+      "role": "Rôle",
+      "status": "Statut",
+      "subscription": "Abonnement",
+      "lastLogin": "Dernière Connexion",
+      "actions": "Actions",
+      "editUser": "Modifier l'Utilisateur",
+      "changeRole": "Changer le Rôle",
+      "viewDetails": "Voir les Détails",
+      "suspendUser": "Suspendre l'Utilisateur",
+      "activateUser": "Activer l'Utilisateur",
+      "deleteUser": "Supprimer l'Utilisateur",
+      "deleteUserConfirm": "Êtes-vous sûr de vouloir supprimer cet utilisateur? Cette action ne peut pas être annulée, et toutes les données de l'utilisateur seront définitivement supprimées."
+    },
+    "analytics": {
+      "userRoles": "Distribution des Rôles d'Utilisateur",
+      "subscriptionTypes": "Types d'Abonnement",
+      "userGrowth": "Croissance des Utilisateurs dans le Temps"
+    },
+    "security": {
+      "overview": "Aperçu de la Sécurité",
+      "securityStatus": "Statut de sécurité de la plateforme:",
+      "secure": "Sécurisé",
+      "lastScan": "Dernière analyse de sécurité:",
+      "activeSessions": "Sessions de connexion actives:",
+      "failedAttempts": "Tentatives de connexion échouées (24h):",
+      "runScan": "Lancer une Analyse de Sécurité",
+      "settings": "Paramètres de Sécurité",
+      "passwordPolicy": "Politique de Mot de Passe",
+      "basic": "Basique (8+ caractères)",
+      "medium": "Moyen (8+ caractères avec chiffres)",
+      "strong": "Fort (8+ caractères avec chiffres, symboles, casse mixte)",
+      "require2FA": "Exiger l'authentification à deux facteurs pour les administrateurs",
+      "require2FAAll": "Exiger l'authentification à deux facteurs pour tous les utilisateurs",
+      "blockSuspicious": "Bloquer les tentatives de connexion suspectes",
+      "saveSettings": "Enregistrer les Paramètres",
+      "alerts": "Alertes de Sécurité Récentes",
+      "alert": "Alerte",
+      "user": "Utilisateur",
+      "ipAddress": "Adresse IP",
+      "dateTime": "Date/Heure",
+      "status": "Statut",
+      "resolved": "Résolu",
+      "investigating": "En cours d'investigation",
+      "normal": "Normal"
+    }
+  },
+  
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Marquer tout comme lu",
+    "viewAll": "Voir tout",
+    "noNotifications": "Pas de notifications",
+    "allCaughtUp": "Vous êtes à jour!"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "home": {
+    "features": {
+      "title": "Powerful Features",
+      "subtitle": "Everything you need to create professional business plans",
+      "items": {
+        "ai": {
+          "title": "AI-Powered Content Generation",
+          "description": "Our advanced AI generates customized business plan content based on your inputs and industry standards."
+        },
+        "time": {
+          "title": "Save Valuable Time",
+          "description": "Create comprehensive business plans in hours instead of weeks with our intuitive platform."
+        },
+        "templates": {
+          "title": "Professional Templates",
+          "description": "Choose from a variety of industry-specific templates designed by business experts."
+        },
+        "financial": {
+          "title": "Financial Projections",
+          "description": "Generate realistic financial forecasts with our easy-to-use financial modeling tools."
+        },
+        "collaboration": {
+          "title": "Seamless Collaboration",
+          "description": "Invite team members, stakeholders, or advisors to review and contribute to your plan."
+        },
+        "questionnaire": {
+          "title": "Guided Questionnaire",
+          "description": "Our step-by-step questionnaire helps you articulate your business vision clearly and comprehensively."
+        }
+      }
+    }
+  }
+} 

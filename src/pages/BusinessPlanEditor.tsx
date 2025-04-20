@@ -143,6 +143,7 @@ const BusinessPlanEditor: React.FC = () => {
   const { t } = useTranslation();
   const editorRef = useRef<ReactQuill | null>(null);
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   
   // Define drawerWidth constant before it's used
   const drawerWidth = 240;
@@ -394,9 +395,12 @@ const BusinessPlanEditor: React.FC = () => {
   return (
     <Box>
       {/* Header */}
-      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
         <Box>
-          <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold' }}>
+          <Typography variant="h4" component="h1" sx={{ 
+            fontWeight: 'bold',
+            fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2.125rem' }
+          }}>
             {businessPlan.title}
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -404,7 +408,12 @@ const BusinessPlanEditor: React.FC = () => {
           </Typography>
         </Box>
         
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ 
+          display: 'flex', 
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 1
+        }}>
           {saving && (
             <Box sx={{ display: 'flex', alignItems: 'center', mr: 2 }}>
               <CircularProgress size={16} sx={{ mr: 1 }} />
@@ -418,7 +427,11 @@ const BusinessPlanEditor: React.FC = () => {
             variant="outlined"
             startIcon={<AutoAwesomeIcon color="inherit" />}
             onClick={handleOpenGenerateDialog}
-            sx={{ mr: { xs: 1, md: 2 }, display: { xs: 'none', sm: 'flex' } }}
+            sx={{ 
+              mr: { xs: 0, md: 1 }, 
+              display: { xs: 'none', sm: 'flex' }
+            }}
+            size={isSmallScreen ? "small" : "medium"}
           >
             {t('businessPlan.generateWithAI')}
           </Button>
@@ -427,7 +440,11 @@ const BusinessPlanEditor: React.FC = () => {
             variant="outlined"
             startIcon={<PreviewIcon color="inherit" />}
             onClick={handlePreviewToggle}
-            sx={{ mr: { xs: 1, md: 2 }, display: { xs: 'none', sm: 'flex' } }}
+            sx={{ 
+              mr: { xs: 0, md: 1 }, 
+              display: { xs: 'none', sm: 'flex' }
+            }}
+            size={isSmallScreen ? "small" : "medium"}
           >
             {showPreview ? t('businessPlan.edit') : t('businessPlan.preview')}
           </Button>
@@ -436,7 +453,8 @@ const BusinessPlanEditor: React.FC = () => {
             variant="contained"
             startIcon={<SaveIcon />}
             onClick={handleSave}
-            sx={{ mr: { xs: 1, md: 2 } }}
+            sx={{ mr: { xs: 0, md: 1 } }}
+            size={isSmallScreen ? "small" : "medium"}
           >
             {t('businessPlan.save')}
           </Button>
@@ -654,7 +672,8 @@ const BusinessPlanEditor: React.FC = () => {
                   <Box sx={{ 
                     height: { xs: '400px', md: '500px' }, 
                     '.ql-container': { height: { xs: '350px', md: '450px' } },
-                    '.ql-editor': { fontSize: '14px', fontFamily: 'Inter, sans-serif' }
+                    '.ql-editor': { fontSize: '14px', fontFamily: 'Inter, sans-serif' },
+                    mb: 4 // Add margin bottom to create space for buttons
                   }}>
                     <ReactQuill
                       ref={editorRef}
@@ -671,7 +690,18 @@ const BusinessPlanEditor: React.FC = () => {
               </div>
             )}
             
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+            {/* Navigation Buttons - Fixed positioning to avoid overlap */}
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                justifyContent: 'space-between',
+                mt: { xs: 4, md: 5 }, // Increased top margin
+                pt: 2, // Additional padding top
+                borderTop: `1px solid ${theme.palette.divider}`,
+                position: 'relative', // Changed from static to relative
+                zIndex: 1 // Ensure buttons are above editor if needed
+              }}
+            >
               <Button 
                 startIcon={<KeyboardArrowLeftIcon />}
                 disabled={businessPlan.sections[0].id === selectedSection}
@@ -682,15 +712,18 @@ const BusinessPlanEditor: React.FC = () => {
                   }
                 }}
                 sx={{ 
-                  color: theme.palette.text.primary,
+                  color: "primary",
                   '&:not(:disabled):hover': {
                     backgroundColor: theme.palette.mode === 'dark' 
-                      ? 'rgba(255,255,255,0.05)' 
-                      : 'rgba(0,0,0,0.05)'
+                      ? 'rgba(59, 130, 246, 0.15)' 
+                      : 'rgba(59, 130, 246, 0.12)'
                   }
                 }}
+                size={isSmallScreen ? "small" : "medium"}
+                color="primary"
+                variant="outlined"
               >
-                {t('businessPlan.previousSection')}
+                {isSmallScreen ? 'Previous' : t('businessPlan.previousSection')}
               </Button>
               
               <Button 
@@ -703,15 +736,18 @@ const BusinessPlanEditor: React.FC = () => {
                   }
                 }}
                 sx={{ 
-                  color: theme.palette.text.primary,
+                  color: "primary",
                   '&:not(:disabled):hover': {
                     backgroundColor: theme.palette.mode === 'dark' 
-                      ? 'rgba(255,255,255,0.05)' 
-                      : 'rgba(0,0,0,0.05)'
+                      ? 'rgba(59, 130, 246, 0.15)' 
+                      : 'rgba(59, 130, 246, 0.12)'
                   }
                 }}
+                size={isSmallScreen ? "small" : "medium"}
+                color="primary"
+                variant="outlined"
               >
-                {t('businessPlan.nextSection')}
+                {isSmallScreen ? 'Next' : t('businessPlan.nextSection')}
               </Button>
             </Box>
           </Paper>

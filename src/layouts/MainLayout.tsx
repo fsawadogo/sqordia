@@ -33,7 +33,8 @@ import {
   BottomNavigation,
   BottomNavigationAction,
   Container,
-  Button
+  Button,
+  Skeleton
 } from '@mui/material';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -53,7 +54,8 @@ import {
   AdminPanelSettings as AdminPanelSettingsIcon,
   Close as CloseIcon,
   Home as HomeIcon,
-  Add as AddIcon
+  Add as AddIcon,
+  Person as PersonIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { logout } from '../store/slices/authSlice';
@@ -62,6 +64,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import AnimatedWrapper from '../components/AnimatedWrapper';
 import { Brain } from 'lucide-react';
 import Logo from '../components/Logo';
+import { useAuth } from '../context/AuthProvider';
 
 interface MainLayoutProps {
   darkMode: boolean;
@@ -83,13 +86,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, toggleDarkMode }) => 
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
-  // Mock user data - would come from auth state
-  const user = {
-    name: "Jane Doe",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80",
-    role: "administrator" // or 'user', 'consultant', 'obnl'
-  };
-  
+  // Get authenticated user data from auth context
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
+
   // Handle page loading visualization (simulated)
   useEffect(() => {
     setIsLoading(true);
@@ -132,6 +131,30 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, toggleDarkMode }) => 
     dispatch(logout());
     navigate('/login');
   };
+
+  // Format user's full name
+  const getFullName = () => {
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName} ${user.lastName}`;
+    } else if (user?.firstName) {
+      return user.firstName;
+    } else if (user?.email) {
+      return user.email.split('@')[0];
+    }
+    return 'User';
+  };
+  
+  // Get user initials for avatar fallback
+  const getUserInitials = () => {
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
+    } else if (user?.firstName) {
+      return user.firstName.charAt(0);
+    } else if (user?.email) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    return 'U';
+  };
   
   const navigationItems = [
     { icon: <DashboardIcon />, text: t('nav.dashboard'), path: '/dashboard' },
@@ -140,7 +163,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, toggleDarkMode }) => 
     { icon: <CreditCardIcon />, text: t('nav.subscription'), path: '/subscription' },
   ];
   
-  if (user.role === 'administrator') {
+  if (user?.role === 'administrator') {
     navigationItems.push({ 
       icon: <AdminPanelSettingsIcon />, 
       text: t('nav.adminPanel'), 
@@ -172,6 +195,15 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, toggleDarkMode }) => 
       }
     })
   };
+
+  // Show loading spinner when authenticating user
+  if (authLoading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
   
   return (
     <Box sx={{ display: 'flex' }}>
@@ -316,16 +348,26 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, toggleDarkMode }) => 
                   aria-haspopup="true"
                   onClick={handleMenu}
                   color="inherit"
+                  sx={{ ml: 0.5 }}
                 >
-                  <Avatar 
-                    alt={user.name} 
-                    src={user.avatar} 
-                    sx={{ 
-                      width: 32, 
-                      height: 32,
-                      border: `2px solid ${theme.palette.primary.main}`
-                    }}
-                  />
+                  {authLoading ? (
+                    <Skeleton variant="circular" width={32} height={32} />
+                  ) : (
+                    <Avatar 
+                      alt={getFullName()} 
+                      src={user?.avatarUrl || undefined} 
+                      sx={{ 
+                        width: 32, 
+                        height: 32,
+                        border: `2px solid ${theme.palette.primary.main}`,
+                        bgcolor: !user?.avatarUrl ? theme.palette.primary.main : undefined,
+                        fontSize: '0.875rem',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {!user?.avatarUrl && getUserInitials()}
+                    </Avatar>
+                  )}
                 </IconButton>
               </motion.div>
             </Box>
@@ -360,8 +402,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, toggleDarkMode }) => 
         }}
       >
         <Box sx={{ px: 2, py: 1, mb: 1 }}>
-          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>{user.name}</Typography>
-          <Typography variant="body2" color="text.secondary">{user.role}</Typography>
+          <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+            {getFullName()}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {user?.role || 'User'}
+          </Typography>
         </Box>
         <Divider sx={{ mb: 1 }} />
         <MenuItem onClick={() => { navigate('/profile'); handleCloseMenu(); }} sx={{ borderRadius: 1 }}>
@@ -512,16 +558,23 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, toggleDarkMode }) => 
                 : 'rgba(0,0,0,0.02)'
             }}>
               <Avatar 
-                alt={user.name} 
-                src={user.avatar} 
+                alt={getFullName()} 
+                src={user?.avatarUrl || undefined} 
                 sx={{ 
                   width: 48, 
                   height: 48,
-                  border: `2px solid ${theme.palette.primary.main}` 
+                  border: `2px solid ${theme.palette.primary.main}`,
+                  bgcolor: !user?.avatarUrl ? theme.palette.primary.main : undefined,
+                  fontSize: '1.25rem',
+                  fontWeight: 'bold'
                 }}
-              />
+              >
+                {!user?.avatarUrl && getUserInitials()}
+              </Avatar>
               <Box sx={{ ml: 2 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>{user.name}</Typography>
+                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                  {getFullName()}
+                </Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ 
                   display: 'flex',
                   alignItems: 'center',
@@ -530,7 +583,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, toggleDarkMode }) => 
                   <Badge 
                     sx={{ 
                       '& .MuiBadge-badge': {
-                        backgroundColor: user.role === 'administrator' 
+                        backgroundColor: user?.role === 'administrator' 
                           ? theme.palette.error.main 
                           : theme.palette.primary.main,
                         width: 8,
@@ -541,9 +594,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, toggleDarkMode }) => 
                       }
                     }}
                   />
-                  {user.role === 'administrator' ? 'Administrator' : 
-                   user.role === 'consultant' ? 'Consultant' : 
-                   user.role === 'obnl' ? 'Non-Profit' : 'User'}
+                  {user?.role === 'administrator' ? 'Administrator' : 
+                   user?.role === 'consultant' ? 'Consultant' : 
+                   user?.role === 'obnl' ? 'Non-Profit' : 'User'}
                 </Typography>
               </Box>
             </Box>
@@ -983,14 +1036,19 @@ const MainLayout: React.FC<MainLayoutProps> = ({ darkMode, toggleDarkMode }) => 
                 >
                   <motion.div>
                     <Avatar 
-                      src={user.avatar} 
-                      alt={user.name} 
+                      src={user?.avatarUrl || undefined} 
+                      alt={getFullName()} 
                       sx={{ 
                         width: 24, 
                         height: 24, 
-                        border: mobileNavValue === 4 ? `2px solid ${theme.palette.primary.main}` : 'none'
+                        border: mobileNavValue === 4 ? `2px solid ${theme.palette.primary.main}` : 'none',
+                        bgcolor: !user?.avatarUrl ? theme.palette.primary.main : undefined,
+                        fontSize: '0.75rem',
+                        fontWeight: 'bold'
                       }} 
-                    />
+                    >
+                      {!user?.avatarUrl && getUserInitials()}
+                    </Avatar>
                   </motion.div>
                 </motion.div>
               } 

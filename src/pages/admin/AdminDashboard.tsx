@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -35,7 +35,9 @@ import {
   Select,
   FormControlLabel,
   Switch,
-  Checkbox
+  Checkbox,
+  Alert,
+  Skeleton
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -49,7 +51,8 @@ import {
   LockPerson as LockPersonIcon,
   Lock as LockIcon,
   LockOpen as LockOpenIcon,
-  ManageAccounts as ManageAccountsIcon
+  ManageAccounts as ManageAccountsIcon,
+  Error as ErrorIcon
 } from '@mui/icons-material';
 import { 
   BarChart, 
@@ -62,6 +65,21 @@ import {
   UserX, 
   ShieldCheck 
 } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  plans: number;
+  lastLogin: string;
+  subscription: string;
+  company?: string;
+  jobTitle?: string;
+  avatarUrl?: string | null;
+}
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -103,130 +121,37 @@ const AdminDashboard: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
   const [userMenuAnchorEl, setUserMenuAnchorEl] = useState<null | HTMLElement>(null);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [fetchLoading, setFetchLoading] = useState(true);
   
-  // Mock data
-  const users = [
-    { 
-      id: '1', 
-      name: 'John Doe', 
-      email: 'john.doe@example.com', 
-      role: 'administrator', 
-      status: 'active',
-      plans: 3,
-      lastLogin: '2025-05-15T14:30:00Z',
-      subscription: 'Enterprise'
-    },
-    { 
-      id: '2', 
-      name: 'Jane Smith', 
-      email: 'jane.smith@example.com', 
-      role: 'user', 
-      status: 'active',
-      plans: 1,
-      lastLogin: '2025-05-14T10:15:00Z',
-      subscription: 'Professional'
-    },
-    { 
-      id: '3', 
-      name: 'Robert Johnson', 
-      email: 'robert.johnson@example.com', 
-      role: 'user', 
-      status: 'active',
-      plans: 2,
-      lastLogin: '2025-05-12T09:30:00Z',
-      subscription: 'Professional'
-    },
-    { 
-      id: '4', 
-      name: 'Sarah Williams', 
-      email: 'sarah.williams@example.com', 
-      role: 'consultant', 
-      status: 'active',
-      plans: 5,
-      lastLogin: '2025-05-10T16:45:00Z',
-      subscription: 'Enterprise'
-    },
-    { 
-      id: '5', 
-      name: 'Michael Brown', 
-      email: 'michael.brown@example.com', 
-      role: 'user', 
-      status: 'inactive',
-      plans: 0,
-      lastLogin: '2025-04-25T11:20:00Z',
-      subscription: 'Free'
-    },
-    { 
-      id: '6', 
-      name: 'Emily Davis', 
-      email: 'emily.davis@example.com', 
-      role: 'obnl', 
-      status: 'active',
-      plans: 1,
-      lastLogin: '2025-05-08T13:10:00Z',
-      subscription: 'Professional'
-    },
-    { 
-      id: '7', 
-      name: 'David Wilson', 
-      email: 'david.wilson@example.com', 
-      role: 'user', 
-      status: 'active',
-      plans: 1,
-      lastLogin: '2025-05-05T09:45:00Z',
-      subscription: 'Free'
-    },
-    { 
-      id: '8', 
-      name: 'Jessica Taylor', 
-      email: 'jessica.taylor@example.com', 
-      role: 'consultant', 
-      status: 'active',
-      plans: 4,
-      lastLogin: '2025-05-03T10:30:00Z',
-      subscription: 'Enterprise'
-    },
-    { 
-      id: '9', 
-      name: 'James Anderson', 
-      email: 'james.anderson@example.com', 
-      role: 'user', 
-      status: 'suspended',
-      plans: 1,
-      lastLogin: '2025-04-20T14:25:00Z',
-      subscription: 'Professional'
-    },
-    { 
-      id: '10', 
-      name: 'Lisa Thomas', 
-      email: 'lisa.thomas@example.com', 
-      role: 'obnl', 
-      status: 'active',
-      plans: 2,
-      lastLogin: '2025-05-01T11:50:00Z',
-      subscription: 'Professional'
-    },
-    { 
-      id: '11', 
-      name: 'Christopher Harris', 
-      email: 'christopher.harris@example.com', 
-      role: 'user', 
-      status: 'active',
-      plans: 1,
-      lastLogin: '2025-04-29T16:15:00Z',
-      subscription: 'Free'
-    },
-    { 
-      id: '12', 
-      name: 'Amanda Martin', 
-      email: 'amanda.martin@example.com', 
-      role: 'user', 
-      status: 'active',
-      plans: 1,
-      lastLogin: '2025-04-28T13:40:00Z',
-      subscription: 'Professional'
+  // Fetch users from the admin API
+  const fetchUsers = useCallback(async () => {
+    try {
+      setFetchLoading(true);
+      setError(null);
+      
+      const { data } = await supabase.functions.invoke('admin', {
+        method: 'GET'
+      });
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      
+      setUsers(data.users || []);
+    } catch (err) {
+      console.error('Error fetching users:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load users');
+    } finally {
+      setFetchLoading(false);
     }
-  ];
+  }, []);
+  
+  // Load users on component mount
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
   
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -259,9 +184,9 @@ const AdminDashboard: React.FC = () => {
     datasets: [
       {
         data: [
-          users.filter(u => u.subscription === 'Free').length,
-          users.filter(u => u.subscription === 'Professional').length,
-          users.filter(u => u.subscription === 'Enterprise').length
+          users.filter(u => u.subscription.toLowerCase() === 'free').length,
+          users.filter(u => u.subscription.toLowerCase() === 'professional').length,
+          users.filter(u => u.subscription.toLowerCase() === 'enterprise').length
         ],
         backgroundColor: [
           theme.palette.grey[500],
@@ -323,6 +248,10 @@ const AdminDashboard: React.FC = () => {
     }, 1500);
   };
   
+  const handleRefresh = () => {
+    fetchUsers();
+  };
+  
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('en-US', {
@@ -358,6 +287,37 @@ const AdminDashboard: React.FC = () => {
     }
   };
   
+  // Render loading skeleton
+  const renderSkeletonLoader = () => (
+    <React.Fragment>
+      {[1, 2, 3, 4, 5].map((item) => (
+        <TableRow key={`skeleton-${item}`}>
+          <TableCell>
+            <Skeleton variant="text" />
+          </TableCell>
+          <TableCell>
+            <Skeleton variant="text" />
+          </TableCell>
+          <TableCell>
+            <Skeleton variant="rounded" width={70} height={24} />
+          </TableCell>
+          <TableCell>
+            <Skeleton variant="rounded" width={70} height={24} />
+          </TableCell>
+          <TableCell>
+            <Skeleton variant="text" />
+          </TableCell>
+          <TableCell>
+            <Skeleton variant="text" />
+          </TableCell>
+          <TableCell align="right">
+            <Skeleton variant="circular" width={32} height={32} />
+          </TableCell>
+        </TableRow>
+      ))}
+    </React.Fragment>
+  );
+  
   return (
     <Box>
       <Box sx={{ mb: 4 }}>
@@ -377,7 +337,7 @@ const AdminDashboard: React.FC = () => {
               <Users size={40} color={theme.palette.primary.main} style={{ marginRight: 16 }} />
               <Box>
                 <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
-                  {users.length}
+                  {fetchLoading ? <Skeleton width={40} /> : users.length}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Total Users
@@ -393,7 +353,7 @@ const AdminDashboard: React.FC = () => {
               <UserCheck size={40} color={theme.palette.success.main} style={{ marginRight: 16 }} />
               <Box>
                 <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
-                  {users.filter(user => user.status === 'active').length}
+                  {fetchLoading ? <Skeleton width={40} /> : users.filter(user => user.status === 'active').length}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Active Users
@@ -409,7 +369,7 @@ const AdminDashboard: React.FC = () => {
               <DollarSign size={40} color={theme.palette.warning.main} style={{ marginRight: 16 }} />
               <Box>
                 <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
-                  {users.filter(user => user.subscription !== 'Free').length}
+                  {fetchLoading ? <Skeleton width={40} /> : users.filter(user => user.subscription.toLowerCase() !== 'free').length}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Paid Subscriptions
@@ -425,7 +385,7 @@ const AdminDashboard: React.FC = () => {
               <LineChart size={40} color={theme.palette.info.main} style={{ marginRight: 16 }} />
               <Box>
                 <Typography variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
-                  {users.reduce((total, user) => total + user.plans, 0)}
+                  {fetchLoading ? <Skeleton width={40} /> : users.reduce((total, user) => total + user.plans, 0)}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   Business Plans
@@ -435,6 +395,21 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </Grid>
       </Grid>
+      
+      {/* Error Alert */}
+      {error && (
+        <Alert 
+          severity="error" 
+          sx={{ mb: 3 }}
+          action={
+            <Button color="inherit" size="small" onClick={handleRefresh}>
+              Try Again
+            </Button>
+          }
+        >
+          {error}
+        </Alert>
+      )}
       
       {/* Main content */}
       <Paper sx={{ mb: 4 }}>
@@ -467,10 +442,12 @@ const AdminDashboard: React.FC = () => {
             <Box>
               <Button 
                 variant="outlined" 
-                startIcon={<FilterListIcon />}
+                startIcon={<RefreshIcon />}
                 sx={{ mr: 2 }}
+                onClick={handleRefresh}
+                disabled={fetchLoading}
               >
-                Filter
+                {fetchLoading ? 'Refreshing...' : 'Refresh'}
               </Button>
               
               <Button 
@@ -491,34 +468,52 @@ const AdminDashboard: React.FC = () => {
                   <TableCell>Role</TableCell>
                   <TableCell>Status</TableCell>
                   <TableCell>Subscription</TableCell>
-                  <TableCell>Last Login</TableCell>
+                  <TableCell>Last Activity</TableCell>
                   <TableCell align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredUsers
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((user) => (
-                    <TableRow key={user.id}>
-                      <TableCell>{user.name}</TableCell>
-                      <TableCell>{user.email}</TableCell>
-                      <TableCell>{getRoleChip(user.role)}</TableCell>
-                      <TableCell>
-                        <Chip 
-                          label={user.status.charAt(0).toUpperCase() + user.status.slice(1)} 
-                          color={getStatusColor(user.status) as any}
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>{user.subscription}</TableCell>
-                      <TableCell>{formatDate(user.lastLogin)}</TableCell>
-                      <TableCell align="right">
-                        <IconButton onClick={(e) => handleOpenUserMenu(e, user.id)}>
-                          <MoreVertIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                {fetchLoading ? (
+                  renderSkeletonLoader()
+                ) : filteredUsers.length > 0 ? (
+                  filteredUsers
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((user) => (
+                      <TableRow key={user.id}>
+                        <TableCell>{user.name}</TableCell>
+                        <TableCell>{user.email}</TableCell>
+                        <TableCell>{getRoleChip(user.role)}</TableCell>
+                        <TableCell>
+                          <Chip 
+                            label={user.status.charAt(0).toUpperCase() + user.status.slice(1)} 
+                            color={getStatusColor(user.status) as any}
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>{user.subscription}</TableCell>
+                        <TableCell>{formatDate(user.lastLogin)}</TableCell>
+                        <TableCell align="right">
+                          <IconButton onClick={(e) => handleOpenUserMenu(e, user.id)}>
+                            <MoreVertIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={7} align="center">
+                      <Box sx={{ py: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <UserX size={40} color={theme.palette.text.secondary} style={{ marginBottom: 16 }} />
+                        <Typography variant="h6" color="text.secondary">
+                          No users found
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {searchTerm ? 'Try adjusting your search' : 'No users in the database yet'}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -773,7 +768,7 @@ const AdminDashboard: React.FC = () => {
                       <TableBody>
                         <TableRow>
                           <TableCell>Multiple failed login attempts</TableCell>
-                          <TableCell>michael.brown@example.com</TableCell>
+                          <TableCell>giovanni.bengalis@gmail.com</TableCell>
                           <TableCell>192.168.1.105</TableCell>
                           <TableCell>{formatDate(new Date().toISOString())}</TableCell>
                           <TableCell><Chip label="Resolved" color="success" size="small" /></TableCell>
@@ -787,7 +782,7 @@ const AdminDashboard: React.FC = () => {
                         </TableRow>
                         <TableRow>
                           <TableCell>Password changed</TableCell>
-                          <TableCell>amanda.martin@example.com</TableCell>
+                          <TableCell>afaicals@gmail.com</TableCell>
                           <TableCell>172.16.254.1</TableCell>
                           <TableCell>{formatDate(new Date().toISOString())}</TableCell>
                           <TableCell><Chip label="Normal" color="info" size="small" /></TableCell>

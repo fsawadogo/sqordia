@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Avatar,
   Box,
@@ -30,7 +30,10 @@ import {
   FormControlLabel,
   Checkbox,
   InputAdornment,
-  useTheme
+  useTheme,
+  Skeleton,
+  Tooltip,
+  Badge
 } from '@mui/material';
 import {
   Edit as EditIcon,
@@ -40,11 +43,19 @@ import {
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
   Check as CheckIcon,
-  Delete as DeleteIcon
+  Delete as DeleteIcon,
+  Error as ErrorIcon,
+  CloudUpload as CloudUploadIcon
 } from '@mui/icons-material';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Bell, BellOff, CheckCircle2, MailCheck, MailX, ShieldCheck, ShieldX } from 'lucide-react';
+import { Bell, BellOff, CheckCircle2, MailCheck, MailX, ShieldCheck, ShieldX, Upload, RefreshCw } from 'lucide-react';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '../store';
+import { updateProfile, changePassword } from '../api/auth';
+import { updateUserProfile } from '../store/slices/authSlice';
+import { supabase } from '../lib/supabase';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -91,6 +102,9 @@ interface SecurityFormData {
 const Profile: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isLoading = useSelector((state: RootState) => state.auth.loading);
   
   // State
   const [tabValue, setTabValue] = useState(0);
@@ -102,46 +116,30 @@ const Profile: React.FC = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [passwordChanged, setPasswordChanged] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [profileUpdated, setProfileUpdated] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarError, setAvatarError] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+  const [openAvatarDialog, setOpenAvatarDialog] = useState(false);
   
-  // Mock user data
-  const [userData] = useState({
-    firstName: 'Jane',
-    lastName: 'Doe',
-    email: 'jane.doe@example.com',
-    company: 'Acme Corporation',
-    jobTitle: 'VP of Marketing',
-    phone: '(555) 123-4567',
-    bio: 'Marketing professional with 10+ years of experience in the technology sector.',
-    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=250&q=80',
-    role: 'user',
-    // Settings
-    notifications: {
-      email: true,
-      push: true,
-      sms: false
-    },
-    emailPreferences: {
-      updates: true,
-      marketing: false,
-      newsletter: true
-    },
-    security: {
-      twoFactor: false,
-      sessionTimeout: '30',
-      lastPasswordChange: '2025-04-15T10:30:00Z'
-    }
-  });
+  // File input ref
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+  
+  // Default placeholder avatar URL
+  const placeholderAvatar = "";
   
   // Form setup
-  const { control: profileControl, handleSubmit: handleProfileSubmit, formState: { errors: profileErrors } } = useForm<ProfileFormData>({
+  const { control: profileControl, handleSubmit: handleProfileSubmit, reset: resetProfileForm, formState: { errors: profileErrors, isDirty: isProfileDirty } } = useForm<ProfileFormData>({
     defaultValues: {
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      email: userData.email,
-      company: userData.company,
-      jobTitle: userData.jobTitle,
-      phone: userData.phone,
-      bio: userData.bio
+      firstName: user?.firstName || '',
+      lastName: user?.lastName || '',
+      email: user?.email || '',
+      company: user?.company || '',
+      jobTitle: user?.jobTitle || '',
+      phone: user?.phone || '',
+      bio: user?.bio || ''
     }
   });
   
@@ -153,6 +151,21 @@ const Profile: React.FC = () => {
     }
   });
   
+  // Update form values when user data changes
+  useEffect(() => {
+    if (user) {
+      resetProfileForm({
+        firstName: user.firstName || '',
+        lastName: user.lastName || '',
+        email: user.email || '',
+        company: user.company || '',
+        jobTitle: user.jobTitle || '',
+        phone: user.phone || '',
+        bio: user.bio || ''
+      });
+    }
+  }, [user, resetProfileForm]);
+  
   const newPassword = watchSecurity('newPassword');
   
   // Handlers
@@ -162,26 +175,194 @@ const Profile: React.FC = () => {
   
   const handleEditToggle = () => {
     setEditMode(!editMode);
+    
+    // If canceling edit, reset form to current user values
+    if (editMode) {
+      resetProfileForm({
+        firstName: user?.firstName || '',
+        lastName: user?.lastName || '',
+        email: user?.email || '',
+        company: user?.company || '',
+        jobTitle: user?.jobTitle || '',
+        phone: user?.phone || '',
+        bio: user?.bio || ''
+      });
+    }
   };
   
-  const onProfileSubmit = (data: ProfileFormData) => {
-    setSaving(true);
+  const onProfileSubmit = async (data: ProfileFormData) => {
+    if (!user?.id) return;
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Profile data:', data);
-      setEditMode(false);
+    setSaving(true);
+    setProfileUpdated(false);
+    
+    try {
+      const { user: updatedUser, error } = await updateProfile(user.id, {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        company: data.company,
+        jobTitle: data.jobTitle,
+        phone: data.phone,
+        bio: data.bio
+      });
+      
+      if (error) throw error;
+      
+      if (updatedUser) {
+        dispatch(updateUserProfile({
+          userId: user.id,
+          updates: updatedUser
+        }));
+        setEditMode(false);
+        setProfileUpdated(true);
+        
+        // Hide success message after a delay
+        setTimeout(() => {
+          setProfileUpdated(false);
+        }, 5000);
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+    } finally {
       setSaving(false);
-    }, 1500);
+    }
   };
   
-  const onSecuritySubmit = (data: SecurityFormData) => {
-    setSaving(true);
+  const handleAvatarSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !e.target.files[0]) return;
     
-    // Simulate API call
-    setTimeout(() => {
-      console.log('Security data:', data);
-      setSaving(false);
+    const file = e.target.files[0];
+    
+    // Validate file type
+    const fileType = file.type;
+    if (!fileType.match(/^image\/(jpeg|jpg|png|gif|webp)$/)) {
+      setAvatarError('Please upload an image file (JPEG, PNG, GIF, or WebP)');
+      return;
+    }
+    
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setAvatarError('Image file is too large. Maximum size is 5MB');
+      return;
+    }
+    
+    // Create a preview
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setAvatarPreview(e.target?.result as string);
+      setOpenAvatarDialog(true);
+    };
+    reader.readAsDataURL(file);
+    
+    // Reset errors
+    setAvatarError(null);
+  };
+  
+  const handleOpenFileSelect = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+  
+  const handleAvatarUpload = async () => {
+    if (!avatarPreview || !user?.id || !fileInputRef.current?.files?.[0]) return;
+
+    const file = fileInputRef.current.files[0];
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+    
+    setUploadingAvatar(true);
+    setAvatarError(null);
+    setUploadProgress(0);
+    
+    try {
+      // Simulate progress updates
+      const progressInterval = setInterval(() => {
+        setUploadProgress((prev) => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 200);
+
+      // Upload the file to Supabase storage
+      const { error: uploadError, data } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+        
+      if (uploadError) throw uploadError;
+      
+      setUploadProgress(95);
+      
+      // Get the public URL
+      const { data: urlData } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+      
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+        
+      // Update user profile with the avatar URL
+      const { user: updatedUser, error: updateError } = await updateProfile(user.id, {
+        avatarUrl: urlData.publicUrl
+      });
+      
+      if (updateError) throw updateError;
+      
+      // Update Redux store
+      if (updatedUser) {
+        dispatch(updateUserProfile({
+          userId: user.id,
+          updates: updatedUser
+        }));
+        setProfileUpdated(true);
+        setTimeout(() => {
+          setProfileUpdated(false);
+        }, 5000);
+      }
+      
+      // Close dialog
+      setOpenAvatarDialog(false);
+      setAvatarPreview(null);
+      
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      setAvatarError('Failed to upload profile picture. Please try again.');
+    } finally {
+      setUploadingAvatar(false);
+      setUploadProgress(0);
+      
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+  
+  const handleCancelAvatarUpload = () => {
+    setOpenAvatarDialog(false);
+    setAvatarPreview(null);
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+  
+  const onSecuritySubmit = async (data: SecurityFormData) => {
+    setSaving(true);
+    setPasswordChanged(false);
+    setPasswordError(null);
+    
+    try {
+      const { error } = await changePassword(data.currentPassword, data.newPassword);
+      
+      if (error) throw error;
+      
       setPasswordChanged(true);
       resetSecurityForm();
       
@@ -189,7 +370,15 @@ const Profile: React.FC = () => {
       setTimeout(() => {
         setPasswordChanged(false);
       }, 5000);
-    }, 1500);
+    } catch (error) {
+      if (error instanceof Error) {
+        setPasswordError(error.message);
+      } else {
+        setPasswordError('An error occurred while changing your password');
+      }
+    } finally {
+      setSaving(false);
+    }
   };
   
   const handleOpenDeleteDialog = () => {
@@ -217,6 +406,64 @@ const Profile: React.FC = () => {
       minute: '2-digit'
     }).format(date);
   };
+  
+  // Get user initials for avatar placeholder
+  const getUserInitials = () => {
+    if (user?.firstName && user?.lastName) {
+      return `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`;
+    } else if (user?.firstName) {
+      return user.firstName.charAt(0);
+    } else if (user?.email) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    return 'U';
+  };
+
+  // Show loading state when fetching user data
+  if (isLoading && !user) {
+    return (
+      <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Skeleton variant="text" width="250px" height={60} />
+        <Skeleton variant="text" width="400px" height={30} />
+        
+        <Paper sx={{ mt: 2, mb: 4 }}>
+          <Skeleton variant="rectangular" height={60} />
+          
+          <Box sx={{ p: 3 }}>
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={4}>
+                <Card>
+                  <CardContent sx={{ textAlign: 'center' }}>
+                    <Skeleton variant="circular" width={128} height={128} sx={{ mx: 'auto', mb: 2 }} />
+                    <Skeleton variant="text" width="80%" sx={{ mx: 'auto' }} />
+                    <Skeleton variant="text" width="60%" sx={{ mx: 'auto' }} />
+                    <Skeleton variant="rounded" width="40%" height={24} sx={{ mx: 'auto', mt: 1 }} />
+                  </CardContent>
+                </Card>
+              </Grid>
+              
+              <Grid item xs={12} md={8}>
+                <Card>
+                  <CardContent>
+                    <Skeleton variant="text" width="200px" height={32} sx={{ mb: 2 }} />
+                    <Skeleton variant="rectangular" height={2} sx={{ mb: 3 }} />
+                    
+                    <Grid container spacing={2}>
+                      {[1, 2, 3, 4, 5, 6].map((item) => (
+                        <Grid item xs={12} sm={item % 2 ? 6 : 12} key={item}>
+                          <Skeleton variant="rectangular" height={56} />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          </Box>
+        </Paper>
+      </Box>
+    );
+  }
   
   return (
     <Box>
@@ -248,11 +495,23 @@ const Profile: React.FC = () => {
               variant={editMode ? "contained" : "outlined"}
               startIcon={editMode ? <SaveIcon /> : <EditIcon />}
               onClick={editMode ? handleProfileSubmit(onProfileSubmit) : handleEditToggle}
-              disabled={saving}
+              disabled={saving || (editMode && !isProfileDirty)}
             >
               {saving ? <CircularProgress size={24} /> : (editMode ? 'Save Changes' : 'Edit Profile')}
             </Button>
           </Box>
+          
+          {profileUpdated && (
+            <Alert severity="success" sx={{ mb: 3 }}>
+              Profile updated successfully
+            </Alert>
+          )}
+          
+          {avatarError && (
+            <Alert severity="error" sx={{ mb: 3 }} onClose={() => setAvatarError(null)}>
+              {avatarError}
+            </Alert>
+          )}
           
           <form onSubmit={handleProfileSubmit(onProfileSubmit)}>
             <Grid container spacing={4}>
@@ -260,46 +519,87 @@ const Profile: React.FC = () => {
               <Grid item xs={12} md={4}>
                 <Card>
                   <CardContent sx={{ textAlign: 'center' }}>
-                    <Box sx={{ position: 'relative', display: 'inline-block' }}>
-                      <Avatar
-                        src={userData.avatarUrl}
-                        alt={`${userData.firstName} ${userData.lastName}`}
-                        sx={{ width: 128, height: 128, mb: 2 }}
-                      />
-                      {editMode && (
-                        <IconButton
-                          sx={{
-                            position: 'absolute',
-                            bottom: 8,
-                            right: 0,
-                            backgroundColor: 'background.paper',
-                            '&:hover': { backgroundColor: 'background.default' },
+                    <Box sx={{ position: 'relative', display: 'inline-block', mb: 2 }}>
+                      <Badge
+                        overlap="circular"
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                        badgeContent={
+                          <Tooltip title="Change profile picture">
+                            <IconButton 
+                              sx={{
+                                bgcolor: theme.palette.primary.main,
+                                color: 'white',
+                                '&:hover': {
+                                  bgcolor: theme.palette.primary.dark,
+                                },
+                                border: `2px solid ${theme.palette.background.paper}`,
+                                width: 32,
+                                height: 32
+                              }}
+                              onClick={handleOpenFileSelect}
+                              disabled={uploadingAvatar}
+                            >
+                              {uploadingAvatar ? (
+                                <CircularProgress size={16} color="inherit" />
+                              ) : (
+                                <PhotoCameraIcon sx={{ fontSize: 16 }} />
+                              )}
+                            </IconButton>
+                          </Tooltip>
+                        }
+                      >
+                        <Avatar
+                          src={user?.avatarUrl || placeholderAvatar}
+                          alt={user?.firstName ? `${user.firstName} ${user.lastName}` : 'User Profile'}
+                          sx={{ 
+                            width: 128, 
+                            height: 128,
+                            bgcolor: user?.avatarUrl ? 'transparent' : theme.palette.primary.main,
+                            fontSize: '3rem',
+                            fontWeight: 'bold'
                           }}
-                          aria-label="change profile picture"
-                          component="label"
                         >
-                          <input hidden accept="image/*" type="file" />
-                          <PhotoCameraIcon />
-                        </IconButton>
-                      )}
+                          {!user?.avatarUrl && getUserInitials()}
+                        </Avatar>
+                      </Badge>
+                      
+                      {/* Hidden file input */}
+                      <input
+                        type="file"
+                        hidden
+                        ref={fileInputRef}
+                        accept="image/jpeg, image/png, image/gif, image/webp"
+                        onChange={handleAvatarSelect}
+                      />
                     </Box>
                     
                     <Typography variant="h6" gutterBottom>
-                      {userData.firstName} {userData.lastName}
+                      {user?.firstName} {user?.lastName}
                     </Typography>
                     
                     <Typography variant="body2" color="text.secondary" gutterBottom>
-                      {userData.email}
+                      {user?.email}
                     </Typography>
                     
                     <Chip 
-                      label={userData.role === 'user' ? 'User' : 
-                             userData.role === 'consultant' ? 'Consultant' : 
-                             userData.role === 'obnl' ? 'Non-profit' : 'Administrator'}
-                      color={userData.role === 'administrator' ? 'error' : 
-                             userData.role === 'consultant' ? 'info' : 'default'}
+                      label={user?.role === 'user' ? 'User' : 
+                             user?.role === 'consultant' ? 'Consultant' : 
+                             user?.role === 'obnl' ? 'Non-profit' : 'Administrator'}
+                      color={user?.role === 'administrator' ? 'error' : 
+                             user?.role === 'consultant' ? 'info' : 'default'}
                       size="small"
                     />
+                    
+                    <Box sx={{ mt: 2 }}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        startIcon={<CloudUploadIcon />}
+                        onClick={handleOpenFileSelect}
+                      >
+                        Upload New Picture
+                      </Button>
+                    </Box>
                   </CardContent>
                 </Card>
               </Grid>
@@ -366,7 +666,7 @@ const Profile: React.FC = () => {
                               {...field}
                               label="Email Address"
                               fullWidth
-                              disabled={!editMode}
+                              disabled={true} // Email can't be changed
                               error={!!profileErrors.email}
                               helperText={profileErrors.email?.message}
                             />
@@ -457,6 +757,12 @@ const Profile: React.FC = () => {
                   {passwordChanged && (
                     <Alert severity="success" sx={{ mb: 3 }}>
                       Password changed successfully
+                    </Alert>
+                  )}
+                  
+                  {passwordError && (
+                    <Alert severity="error" sx={{ mb: 3 }}>
+                      {passwordError}
                     </Alert>
                   )}
                   
@@ -583,23 +889,17 @@ const Profile: React.FC = () => {
                   <Divider sx={{ mb: 3 }} />
                   
                   <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                    {userData.security.twoFactor ? (
-                      <ShieldCheck size={24} color={theme.palette.success.main} />
-                    ) : (
-                      <ShieldX size={24} color={theme.palette.error.main} />
-                    )}
+                    <ShieldX size={24} color={theme.palette.error.main} />
                     <Typography variant="body1" sx={{ ml: 2 }}>
-                      {userData.security.twoFactor 
-                        ? 'Two-factor authentication is enabled' 
-                        : 'Two-factor authentication is disabled'}
+                      Two-factor authentication is disabled
                     </Typography>
                   </Box>
                   
                   <Button
                     variant="outlined"
-                    color={userData.security.twoFactor ? 'error' : 'primary'}
+                    color="primary"
                   >
-                    {userData.security.twoFactor ? 'Disable' : 'Enable'} Two-Factor Authentication
+                    Enable Two-Factor Authentication
                   </Button>
                 </CardContent>
               </Card>
@@ -614,7 +914,7 @@ const Profile: React.FC = () => {
                   <FormControl fullWidth margin="normal">
                     <InputLabel>Session Timeout</InputLabel>
                     <Select
-                      value={userData.security.sessionTimeout}
+                      value="30"
                       label="Session Timeout"
                     >
                       <MenuItem value="15">15 minutes</MenuItem>
@@ -630,7 +930,9 @@ const Profile: React.FC = () => {
                   
                   <Box sx={{ mt: 3 }}>
                     <Typography variant="body2" color="text.secondary" gutterBottom>
-                      <strong>Last password change:</strong> {formatDate(userData.security.lastPasswordChange)}
+                      <strong>Last password change:</strong> {user?.lastPasswordChange 
+                        ? formatDate(user.lastPasswordChange)
+                        : 'Not available'}
                     </Typography>
                     
                     <Button 
@@ -694,7 +996,7 @@ const Profile: React.FC = () => {
                     <FormControlLabel
                       control={
                         <Switch 
-                          checked={userData.notifications.email} 
+                          checked={true} 
                           color="primary"
                         />
                       }
@@ -710,9 +1012,8 @@ const Profile: React.FC = () => {
                     <FormControlLabel
                       control={
                         <Switch 
-                          checked={userData.emailPreferences.updates} 
+                          checked={true} 
                           color="primary"
-                          disabled={!userData.notifications.email}
                         />
                       }
                       label="Account updates and security alerts"
@@ -721,9 +1022,8 @@ const Profile: React.FC = () => {
                     <FormControlLabel
                       control={
                         <Switch 
-                          checked={userData.emailPreferences.marketing} 
-                          color="primary" 
-                          disabled={!userData.notifications.email}
+                          checked={false} 
+                          color="primary"
                         />
                       }
                       label="Marketing and promotional offers"
@@ -732,9 +1032,8 @@ const Profile: React.FC = () => {
                     <FormControlLabel
                       control={
                         <Switch 
-                          checked={userData.emailPreferences.newsletter} 
+                          checked={true} 
                           color="primary"
-                          disabled={!userData.notifications.email}
                         />
                       }
                       label="Weekly newsletter and tips"
@@ -751,7 +1050,7 @@ const Profile: React.FC = () => {
                     <FormControlLabel
                       control={
                         <Switch 
-                          checked={userData.notifications.push} 
+                          checked={true} 
                           color="primary"
                         />
                       }
@@ -767,7 +1066,7 @@ const Profile: React.FC = () => {
                     <FormControlLabel
                       control={
                         <Switch 
-                          checked={userData.notifications.sms} 
+                          checked={false} 
                           color="primary"
                         />
                       }
@@ -793,6 +1092,89 @@ const Profile: React.FC = () => {
           </Box>
         </TabPanel>
       </Paper>
+      
+      {/* Avatar Preview Dialog */}
+      <Dialog 
+        open={openAvatarDialog} 
+        onClose={handleCancelAvatarUpload}
+        maxWidth="xs"
+        fullWidth
+      >
+        <DialogTitle>Set Profile Picture</DialogTitle>
+        <DialogContent>
+          <Box sx={{ textAlign: 'center' }}>
+            {avatarPreview && (
+              <Box sx={{ mb: 2, mt: 1 }}>
+                <Avatar 
+                  src={avatarPreview} 
+                  alt="Preview"
+                  sx={{ 
+                    width: 150, 
+                    height: 150, 
+                    mx: 'auto',
+                    border: `3px solid ${theme.palette.primary.main}`
+                  }}
+                />
+              </Box>
+            )}
+            
+            {uploadingAvatar && (
+              <Box sx={{ position: 'relative', display: 'inline-flex', mb: 2 }}>
+                <CircularProgress 
+                  variant="determinate" 
+                  value={uploadProgress} 
+                  size={40} 
+                  sx={{ color: theme.palette.primary.main }}
+                />
+                <Box
+                  sx={{
+                    top: 0,
+                    left: 0,
+                    bottom: 0,
+                    right: 0,
+                    position: 'absolute',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Typography
+                    variant="caption"
+                    component="div"
+                    color="text.secondary"
+                  >
+                    {`${Math.round(uploadProgress)}%`}
+                  </Typography>
+                </Box>
+              </Box>
+            )}
+            
+            {avatarError && (
+              <Alert severity="error" sx={{ mb: 2 }} onClose={() => setAvatarError(null)}>
+                {avatarError}
+              </Alert>
+            )}
+            
+            <Typography variant="body2" color="text.secondary">
+              This will be displayed on your profile and in your contributions across the platform.
+            </Typography>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelAvatarUpload} disabled={uploadingAvatar}>
+            Cancel
+          </Button>
+          <Button 
+            onClick={handleAvatarUpload} 
+            color="primary" 
+            variant="contained"
+            disabled={uploadingAvatar}
+            startIcon={uploadingAvatar ? <CircularProgress size={16} /> : <CloudUploadIcon />}
+          >
+            {uploadingAvatar ? 'Uploading...' : 'Set as Profile Picture'}
+          </Button>
+        </DialogActions>
+      </Dialog>
       
       {/* Delete Account Dialog */}
       <Dialog

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
@@ -22,6 +22,7 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import { loginStart, loginSuccess, loginFailure } from '../../store/slices/authSlice';
 import { motion } from 'framer-motion';
+import { signIn } from '../../api/auth';
 
 interface LoginFormInputs {
   email: string;
@@ -42,9 +43,18 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check for message from registration page
+  useEffect(() => {
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+    }
+  }, [location]);
   
   const onSubmit = async (data: LoginFormInputs) => {
     setLoginError(null);
@@ -52,34 +62,27 @@ const Login: React.FC = () => {
     dispatch(loginStart());
     
     try {
-      // Mock API call - replace with actual API
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Use the signIn function from auth.ts
+      const { user, error } = await signIn({
+        email: data.email,
+        password: data.password
+      });
+
+      if (error) {
+        throw error;
+      }
       
-      // Mock success response
-      if (data.email === 'admin@example.com' && data.password === 'password') {
-        const user = {
-          id: '123',
-          email: data.email,
-          firstName: 'Admin',
-          lastName: 'User',
-          role: 'administrator' as const
-        };
+      if (user) {
+        dispatch(loginSuccess({ 
+          user, 
+          token: 'session-token' // In Supabase, the session is managed automatically
+        }));
         
-        dispatch(loginSuccess({ user, token: 'mock-jwt-token' }));
-        navigate('/dashboard');
-      } else if (data.email === 'user@example.com' && data.password === 'password') {
-        const user = {
-          id: '456',
-          email: data.email,
-          firstName: 'Regular',
-          lastName: 'User',
-          role: 'user' as const
-        };
-        
-        dispatch(loginSuccess({ user, token: 'mock-jwt-token' }));
-        navigate('/dashboard');
+        // Redirect to dashboard or the page user was trying to access
+        const redirectTo = location.state?.from?.pathname || '/dashboard';
+        navigate(redirectTo);
       } else {
-        throw new Error(t('auth.invalidCredentials'));
+        throw new Error('Failed to authenticate user');
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -108,6 +111,12 @@ const Login: React.FC = () => {
         <Typography variant="body2" color="text.secondary" paragraph>
           {t('auth.welcomeBack')}
         </Typography>
+        
+        {successMessage && (
+          <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccessMessage(null)}>
+            {successMessage}
+          </Alert>
+        )}
         
         {loginError && (
           <Alert severity="error" sx={{ mb: 2 }}>
@@ -225,22 +234,6 @@ const Login: React.FC = () => {
               </Typography>
             </Grid>
           </Grid>
-          
-          <Box sx={{ mt: 3, textAlign: 'center' }}>
-            <Typography variant="caption" color="text.secondary">
-              {t('auth.demoCredentials')}
-            </Typography>
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 1 }}>
-              <Box>
-                <Typography variant="caption">{t('auth.admin')}</Typography>
-                <Typography variant="caption" display="block">admin@example.com / password</Typography>
-              </Box>
-              <Box>
-                <Typography variant="caption">{t('auth.user')}</Typography>
-                <Typography variant="caption" display="block">user@example.com / password</Typography>
-              </Box>
-            </Box>
-          </Box>
         </Box>
       </Box>
     </motion.div>

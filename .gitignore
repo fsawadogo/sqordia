@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+docs/Architecture.docx
+docs/Architecture Sqordia.pdf
+.gitignore
+docs/Architecture.pdf

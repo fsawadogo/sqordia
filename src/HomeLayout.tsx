@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
   AppBar,
@@ -45,12 +45,28 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children, darkMode, toggleDarkM
   const { t } = useTranslation();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const navigate = useNavigate();
+  
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setMobileMenuOpen(false); // Close mobile menu after clicking
+    } else if (sectionId === 'home') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setMobileMenuOpen(false);
+    } else {
+      // If not a section, treat as a route
+      navigate(sectionId);
+      setMobileMenuOpen(false);
+    }
+  };
   
   const navItems = [
-    { label: t('nav.home'), path: '/' },
-    { label: t('nav.features'), path: '/#features' },
-    { label: t('nav.pricing'), path: '/#pricing' },
-    { label: t('nav.businessPlan'), path: '/dashboard' },
+    { label: t('nav.home'), target: 'home' }, // Scrolls to top
+    { label: t('nav.features'), target: 'features' },
+    { label: t('nav.pricing'), target: 'pricing' },
+    { label: t('nav.businessPlan'), target: '/dashboard' }, // External route
   ];
   
   return (
@@ -68,9 +84,9 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children, darkMode, toggleDarkM
       >
         <Container maxWidth="lg">
           <Toolbar disableGutters sx={{ py: 1 }}>
-            <RouterLink to="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+            <Box onClick={() => scrollToSection('home')} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
               <Logo width={140} height={40} />
-            </RouterLink>
+            </Box>
             
             <Box sx={{ flexGrow: 1 }} />
             
@@ -79,8 +95,10 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children, darkMode, toggleDarkM
                 {navItems.map((item) => (
                   <Button 
                     key={item.label} 
-                    component={RouterLink} 
-                    to={item.path}
+                    onClick={() => item.target.startsWith('/') 
+                      ? navigate(item.target) 
+                      : scrollToSection(item.target)
+                    }
                     color="inherit"
                     sx={{ 
                       fontWeight: 500,
@@ -163,7 +181,6 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children, darkMode, toggleDarkM
                   <Box
                     sx={{ width: 250, pt: 2 }}
                     role="presentation"
-                    onClick={() => setMobileMenuOpen(false)}
                   >
                     <Box sx={{ 
                       display: 'flex', 
@@ -180,8 +197,10 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children, darkMode, toggleDarkM
                       {navItems.map((item) => (
                         <ListItem key={item.label} disablePadding sx={{ mb: 0.5 }}>
                           <ListItemButton 
-                            component={RouterLink} 
-                            to={item.path}
+                            onClick={() => item.target.startsWith('/') 
+                              ? navigate(item.target) 
+                              : scrollToSection(item.target)
+                            }
                             sx={{
                               py: 1.5,
                               px: 2,
@@ -330,17 +349,32 @@ const HomeLayout: React.FC<HomeLayoutProps> = ({ children, darkMode, toggleDarkM
               </Typography>
               <List disablePadding>
                 <ListItem disablePadding>
-                  <Link href="#features" color="inherit" underline="hover">
+                  <Link 
+                    component="button" 
+                    color="inherit" 
+                    underline="hover"
+                    onClick={() => scrollToSection('features')}
+                  >
                     <Typography variant="body2">{t('footer.features')}</Typography>
                   </Link>
                 </ListItem>
                 <ListItem disablePadding>
-                  <Link href="#pricing" color="inherit" underline="hover">
+                  <Link 
+                    component="button" 
+                    color="inherit" 
+                    underline="hover"
+                    onClick={() => scrollToSection('pricing')}
+                  >
                     <Typography variant="body2">{t('footer.pricing')}</Typography>
                   </Link>
                 </ListItem>
                 <ListItem disablePadding>
-                  <Link href="#" color="inherit" underline="hover">
+                  <Link 
+                    component="button" 
+                    color="inherit" 
+                    underline="hover"
+                    onClick={() => navigate('/dashboard')}
+                  >
                     <Typography variant="body2">{t('footer.templates')}</Typography>
                   </Link>
                 </ListItem>

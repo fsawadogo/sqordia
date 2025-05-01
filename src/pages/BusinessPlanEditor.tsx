@@ -70,10 +70,11 @@ import { Brain, FileText, Share2 } from 'lucide-react';
 import { updateSectionContent, autoSaveDone } from '../store/slices/businessPlanSlice';
 import { showNotification } from '../store/slices/uiSlice';
 import AnimatedWrapper from '../components/AnimatedWrapper';
+import ExportDialog from '../components/ExportDialog';
 
 // Mock business plan data
 const businessPlanData = {
-  id: '1',
+  id: 'f47ac10b-58cc-4372-a567-0e02b2c3d479', // Changed from '1' to a valid UUID
   title: 'Tech Startup',
   createdAt: '2025-05-05T10:00:00Z',
   updatedAt: '2025-05-15T14:30:00Z',
@@ -85,49 +86,49 @@ const businessPlanData = {
   },
   sections: [
     {
-      id: 'executive_summary',
+      id: 'e47ac10b-58cc-4372-a567-0e02b2c3d401', // Changed to a valid UUID
       title: 'Executive Summary',
       icon: <DescriptionIcon />,
       content: '<h2>Executive Summary</h2><p>Acme Tech Solutions is a software company that develops AI-powered tools for small businesses. Our flagship product, DataInsight, helps small business owners make better decisions through automated data analysis.</p><p>Founded in 2025, our mission is to democratize access to sophisticated data analysis tools that were previously only available to enterprise companies with large budgets.</p><p>With a growing market of over 30 million small businesses in the United States alone, we are positioning ourselves to capture significant market share by offering an affordable, user-friendly solution that delivers immediate value.</p>'
     },
     {
-      id: 'company_overview',
+      id: 'e47ac10b-58cc-4372-a567-0e02b2c3d402', // Changed to a valid UUID
       title: 'Company Overview',
       icon: <BusinessIcon />,
       content: '<h2>Company Overview</h2><p>Acme Tech Solutions is a Delaware C-Corporation founded in January 2025 by Jane Smith and John Doe. The company is headquartered in Austin, Texas with a remote team across the United States.</p><p>Our mission is to empower small businesses with enterprise-grade data analysis tools that are affordable, accessible, and actionable.</p><p>The company is currently in the seed stage, having raised $500,000 from angel investors to develop and launch our first product.</p>'
     },
     {
-      id: 'product',
+      id: 'e47ac10b-58cc-4372-a567-0e02b2c3d403', // Changed to a valid UUID
       title: 'Product & Services',
       icon: <TitleIcon />,
       content: '<h2>Product & Services</h2><p>DataInsight is a SaaS platform that connects to a small business\'s existing tools (accounting software, CRM, e-commerce platforms) and automatically generates actionable insights and recommendations.</p><p>Key features include:</p><ul><li>Automated financial health analysis</li><li>Customer segmentation and behavior insights</li><li>Inventory optimization recommendations</li><li>Cash flow forecasting</li><li>Competitor benchmarking</li></ul><p>The platform is designed to be user-friendly, requiring no technical expertise to implement or use. All insights are presented in plain language with clear recommendations.</p>'
     },
     {
-      id: 'market_analysis',
+      id: 'e47ac10b-58cc-4372-a567-0e02b2c3d404', // Changed to a valid UUID
       title: 'Market Analysis',
       icon: <BarChartIcon />,
       content: '<h2>Market Analysis</h2><p>The global small business analytics market is projected to reach $10 billion by 2027, growing at a CAGR of 14%. This growth is driven by:</p><ul><li>Increasing digitization of small businesses</li><li>Growing awareness of data-driven decision making</li><li>Decreasing cost of data storage and processing</li><li>Rising competition necessitating better business intelligence</li></ul><p>Our target market consists of small businesses with 5-100 employees across various industries, with a particular focus on retail, professional services, and food service businesses.</p>'
     },
     {
-      id: 'strategy',
+      id: 'e47ac10b-58cc-4372-a567-0e02b2c3d405', // Changed to a valid UUID
       title: 'Business Strategy',
       icon: <SettingsIcon />,
       content: '<h2>Business Strategy</h2><p>Our go-to-market strategy focuses on a freemium model to drive adoption, with tiered pricing based on business size and feature access.</p><p>Key strategic initiatives include:</p><ul><li>Partnerships with small business service providers (accountants, consultants)</li><li>Content marketing focused on small business data literacy and success stories</li><li>Integration marketplace to connect with popular small business tools</li><li>Regional expansion targeting English-speaking markets first, followed by localization</li></ul>'
     },
     {
-      id: 'team',
+      id: 'e47ac10b-58cc-4372-a567-0e02b2c3d406', // Changed to a valid UUID
       title: 'Management & Team',
       icon: <PeopleAltIcon />,
       content: '<h2>Management & Team</h2><p>Our leadership team brings together expertise in software development, data science, and small business operations:</p><ul><li><strong>Jane Smith, CEO:</strong> 10+ years experience in B2B SaaS companies, previously VP of Product at DataCorp</li><li><strong>John Doe, CTO:</strong> Former Lead Engineer at TechGiant, with expertise in AI and machine learning</li><li><strong>Sarah Johnson, CMO:</strong> 15+ years in small business marketing, former marketing director at SmallBiz Association</li></ul><p>The company currently employs 10 full-time staff across engineering, data science, marketing, and customer success.</p>'
     },
     {
-      id: 'financials',
+      id: 'e47ac10b-58cc-4372-a567-0e02b2c3d407', // Changed to a valid UUID
       title: 'Financial Plan',
       icon: <PaymentsIcon />,
       content: '<h2>Financial Plan</h2><p>Our financial projections show a path to profitability within 24 months:</p><table border="1" cellpadding="5"><tr><th></th><th>Year 1</th><th>Year 2</th><th>Year 3</th></tr><tr><td>Revenue</td><td>$250,000</td><td>$1.2M</td><td>$3.5M</td></tr><tr><td>Expenses</td><td>$750,000</td><td>$1.1M</td><td>$2.2M</td></tr><tr><td>Net Income</td><td>-$500,000</td><td>$100,000</td><td>$1.3M</td></tr></table><p>Key financial assumptions:</p><ul><li>Average customer lifetime value: $2,000</li><li>Customer acquisition cost: $500 (initial, decreasing over time)</li><li>Monthly churn rate: 5% (improving to 3% by Year 3)</li><li>Gross margin: 85%</li></ul>'
     },
     {
-      id: 'appendix',
+      id: 'e47ac10b-58cc-4372-a567-0e02b2c3d408', // Changed to a valid UUID
       title: 'Appendix',
       icon: <DescriptionIcon />,
       content: '<h2>Appendix</h2><p>Additional supporting information and documentation:</p><ul><li>Detailed market research reports</li><li>Competitor analysis</li><li>Product development roadmap</li><li>Customer testimonials and case studies</li><li>Marketing collateral</li><li>Detailed financial projections</li></ul>'
@@ -187,8 +188,11 @@ const BusinessPlanEditor: React.FC = () => {
       setTimeout(() => {
         // In a real app, fetch the plan data from API
         setBusinessPlan(businessPlanData);
-        setSelectedSection(businessPlanData.sections[0].id);
-        setContent(businessPlanData.sections[0].content);
+        // Make sure we always have a valid section selected
+        if (businessPlanData.sections.length > 0) {
+          setSelectedSection(businessPlanData.sections[0].id);
+          setContent(businessPlanData.sections[0].content);
+        }
         setLoading(false);
       }, 1000);
     }
@@ -219,10 +223,18 @@ const BusinessPlanEditor: React.FC = () => {
     'link', 'image', 'align'
   ];
   
+  // Utility function to validate UUID
+  const isValidUuid = (id: string): boolean => {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(id);
+  };
+  
   // Handlers
   const handleSectionChange = (sectionId: string) => {
-    // Auto-save current content before switching
-    autoSaveContent();
+    // Auto-save current content before switching if we have a valid selectedSection
+    if (selectedSection && isValidUuid(selectedSection)) {
+      autoSaveContent();
+    }
     
     const section = businessPlan.sections.find(s => s.id === sectionId);
     if (section) {
@@ -236,6 +248,19 @@ const BusinessPlanEditor: React.FC = () => {
   };
   
   const autoSaveContent = () => {
+    // Only proceed if selectedSection is defined and valid
+    if (!selectedSection || !isValidUuid(selectedSection)) {
+      console.warn('Cannot auto-save: No valid section selected');
+      return;
+    }
+    
+    // Ensure we have a valid section before proceeding
+    const sectionToUpdate = businessPlan.sections.find(s => s.id === selectedSection);
+    if (!sectionToUpdate) {
+      console.warn(`Cannot auto-save: Section with ID ${selectedSection} not found`);
+      return;
+    }
+    
     // Update local state
     setBusinessPlan(prev => ({
       ...prev,
@@ -247,7 +272,7 @@ const BusinessPlanEditor: React.FC = () => {
       updatedAt: new Date().toISOString()
     }));
     
-    // Dispatch to Redux store
+    // Dispatch to Redux store with a valid sectionId
     dispatch(updateSectionContent({
       sectionId: selectedSection,
       content: content
@@ -262,8 +287,31 @@ const BusinessPlanEditor: React.FC = () => {
   };
   
   const handleSave = () => {
-    autoSaveContent();
+    // Only save if we have a valid selectedSection
+    if (!selectedSection || !isValidUuid(selectedSection)) {
+      // Show error notification if no valid section is selected
+      setNotification({
+        open: true,
+        message: 'Cannot save: No valid section selected',
+        type: 'error'
+      });
+      return;
+    }
     
+    // Validate that the section exists in our business plan
+    const sectionExists = businessPlan.sections.some(s => s.id === selectedSection);
+    if (!sectionExists) {
+      setNotification({
+        open: true,
+        message: `Cannot save: Section with ID ${selectedSection} not found`,
+        type: 'error'
+      });
+      return;
+    }
+    
+    // Now it's safe to save
+    autoSaveContent();
+      
     // Show success notification
     setNotification({
       open: true,
@@ -273,7 +321,7 @@ const BusinessPlanEditor: React.FC = () => {
   };
   
   const handlePreviewToggle = () => {
-    if (isEditing) {
+    if (isEditing && selectedSection && isValidUuid(selectedSection)) {
       // Switching to preview mode, save content first
       autoSaveContent();
     }
@@ -284,23 +332,6 @@ const BusinessPlanEditor: React.FC = () => {
   const handleOpenExportDialog = () => {
     setOpenExportDialog(true);
     setOptionsMenuAnchor(null);
-  };
-  
-  const handleExport = () => {
-    setLoading(true);
-    
-    // Simulate export process
-    setTimeout(() => {
-      setLoading(false);
-      setOpenExportDialog(false);
-      
-      // Show success notification
-      setNotification({
-        open: true,
-        message: `Business plan exported as ${exportFormat.toUpperCase()} successfully`,
-        type: 'success'
-      });
-    }, 2000);
   };
   
   const handleOpenShareDialog = () => {
@@ -331,12 +362,33 @@ const BusinessPlanEditor: React.FC = () => {
   };
   
   const handleGenerateWithAI = () => {
+    // Only proceed if we have a valid selectedSection
+    if (!selectedSection || !isValidUuid(selectedSection)) {
+      setNotification({
+        open: true,
+        message: 'Cannot generate content: No valid section selected',
+        type: 'error'
+      });
+      return;
+    }
+    
+    // Validate that the section exists
+    const currentSection = businessPlan.sections.find(s => s.id === selectedSection);
+    if (!currentSection) {
+      setNotification({
+        open: true,
+        message: `Cannot generate content: Section with ID ${selectedSection} not found`,
+        type: 'error'
+      });
+      return;
+    }
+    
     setAiGenerating(true);
     
     // Simulate AI generation
     setTimeout(() => {
       // Mock AI-generated content
-      const aiContent = `<h2>${businessPlan.sections.find(s => s.id === selectedSection)?.title}</h2>
+      const aiContent = `<h2>${currentSection.title}</h2>
       <p>This is AI-generated content for your business plan. It includes detailed information about this section based on your questionnaire answers and business type.</p>
       <p>Our AI has analyzed similar businesses in your industry and provided recommendations that are tailored to your specific circumstances.</p>
       <ul>
@@ -682,7 +734,7 @@ const BusinessPlanEditor: React.FC = () => {
                       onChange={handleEditorChange}
                       modules={modules}
                       formats={formats}
-                      onBlur={autoSaveContent}
+                      onBlur={selectedSection && isValidUuid(selectedSection) ? autoSaveContent : undefined}
                       placeholder="Start typing your content here..."
                     />
                   </Box>
@@ -793,7 +845,7 @@ const BusinessPlanEditor: React.FC = () => {
           <Button 
             variant="contained" 
             onClick={handleGenerateWithAI}
-            disabled={aiGenerating}
+            disabled={aiGenerating || !selectedSection || !isValidUuid(selectedSection)}
             startIcon={aiGenerating ? <CircularProgress size={16} /> : <AutoAwesomeIcon />}
           >
             {aiGenerating ? t('businessPlan.generating') : t('businessPlan.generateContent')}
@@ -802,88 +854,13 @@ const BusinessPlanEditor: React.FC = () => {
       </Dialog>
       
       {/* Export Dialog */}
-      <Dialog 
-        open={openExportDialog} 
+      <ExportDialog 
+        open={openExportDialog}
         onClose={() => setOpenExportDialog(false)}
-        maxWidth="sm"
-        fullWidth
-        PaperProps={{
-          sx: {
-            borderRadius: 2,
-            p: 1
-          }
-        }}
-      >
-        <DialogTitle>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <DownloadIcon color="primary" />
-            <Typography sx={{ ml: 1, fontWeight: 'bold' }}>
-              {t('businessPlan.exportDialogTitle')}
-            </Typography>
-          </Box>
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {t('businessPlan.exportDialogDesc')}
-          </DialogContentText>
-          <Box sx={{ mt: 2 }}>
-            <FormControl fullWidth sx={{ mb: 2 }}>
-              <InputLabel>{t('businessPlan.exportFormat')}</InputLabel>
-              <Select
-                value={exportFormat}
-                label={t('businessPlan.exportFormat')}
-                onChange={(e) => setExportFormat(e.target.value)}
-              >
-                <MenuItem value="pdf">PDF Document</MenuItem>
-                <MenuItem value="docx">Word Document (DOCX)</MenuItem>
-                <MenuItem value="pptx">PowerPoint Presentation (PPTX)</MenuItem>
-              </Select>
-            </FormControl>
-            
-            <FormControl fullWidth>
-              <InputLabel>{t('businessPlan.sectionsToInclude')}</InputLabel>
-              <Select
-                multiple
-                value={businessPlan.sections.map(s => s.id)}
-                label={t('businessPlan.sectionsToInclude')}
-                renderValue={(selected) => (
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                    {(selected as string[]).map((value) => {
-                      const section = businessPlan.sections.find(s => s.id === value);
-                      return (
-                        <Chip 
-                          key={value} 
-                          label={section?.title} 
-                          size="small"
-                        />
-                      );
-                    })}
-                  </Box>
-                )}
-              >
-                {businessPlan.sections.map((section) => (
-                  <MenuItem key={section.id} value={section.id}>
-                    {section.title}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenExportDialog(false)}>
-            {t('common.cancel')}
-          </Button>
-          <Button 
-            variant="contained" 
-            onClick={handleExport}
-            disabled={loading}
-            startIcon={loading ? <CircularProgress size={16} /> : <DownloadIcon />}
-          >
-            {loading ? t('businessPlan.exporting') : t('common.export')}
-          </Button>
-        </DialogActions>
-      </Dialog>
+        sections={businessPlan.sections}
+        businessPlanTitle={businessPlan.title}
+        businessPlanId={businessPlan.id}
+      />
       
       {/* Share Dialog */}
       <Dialog 

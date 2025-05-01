@@ -191,7 +191,7 @@ const Home: React.FC = () => {
   
   const features = [
     {
-      icon: <Logo width={40} height={40} includeText={false} />,
+      icon: <Brain size={40} color={theme.palette.primary.main} />,
       title: 'AI-Powered Content Generation',
       description: 'Our advanced AI generates customized business plan content based on your inputs and industry standards.'
     },
@@ -302,9 +302,9 @@ const Home: React.FC = () => {
                   variant="outlined" 
                   size="large"
                   onClick={() => {
-                    const demoSection = document.getElementById('features');
-                    if (demoSection) {
-                      demoSection.scrollIntoView({ behavior: 'smooth' });
+                    const featuresSection = document.getElementById('features');
+                    if (featuresSection) {
+                      featuresSection.scrollIntoView({ behavior: 'smooth' });
                     }
                   }}
                   sx={{ 

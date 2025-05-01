@@ -13,6 +13,7 @@ import {
   DialogTitle,
   Divider,
   FormControl,
+  FormHelperText,
   Grid,
   IconButton,
   MenuItem,
@@ -20,6 +21,7 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Snackbar,
   Step,
   StepButton,
   StepLabel,
@@ -32,318 +34,55 @@ import {
   Checkbox,
   Alert,
   useTheme,
+  Chip,
   useMediaQuery,
   MobileStepper,
   CardActionArea,
-  Stack,
+  Stack
 } from '@mui/material';
 import {
   ArrowBack,
   ArrowForward,
+  Close,
   Help,
+  InfoOutlined,
+  Save,
   WarningAmber,
   AutoAwesome,
   KeyboardArrowLeft,
   KeyboardArrowRight,
+  TouchApp
 } from '@mui/icons-material';
 import { showNotification } from '../store/slices/uiSlice';
 import { updateQuestionAnswer, autoSaveDone, autoSaveError } from '../store/slices/businessPlanSlice';
 import { Brain } from 'lucide-react';
+import { motion } from 'framer-motion';
 import AnimatedWrapper from '../components/AnimatedWrapper';
-
-// Mock templates
-const businessPlanTemplates = [
-  {
-    id: 'startup',
-    name: 'Tech Startup',
-    description: 'Perfect for software, SaaS, or tech product companies',
-    sections: ['company_overview', 'product', 'market_analysis', 'strategy', 'team', 'financials']
-  },
-  {
-    id: 'retail',
-    name: 'Retail Business',
-    description: 'For shops, boutiques, and retail stores',
-    sections: ['company_overview', 'products_services', 'market_analysis', 'location', 'operations', 'financials']
-  },
-  {
-    id: 'service',
-    name: 'Service Business',
-    description: 'Ideal for consulting, professional services, agencies',
-    sections: ['company_overview', 'services', 'market_analysis', 'strategy', 'team', 'financials']
-  },
-  {
-    id: 'restaurant',
-    name: 'Restaurant/Food Service',
-    description: 'For restaurants, cafes, food trucks or catering businesses',
-    sections: ['company_overview', 'concept', 'menu', 'location', 'operations', 'marketing', 'financials']
-  },
-  {
-    id: 'nonprofit',
-    name: 'Non-Profit Organization',
-    description: 'Customized for charitable and non-profit organizations',
-    sections: ['organization_overview', 'mission', 'programs', 'impact_measurement', 'structure', 'funding']
-  }
-];
-
-// Mock sections and questions
-const questionnaireSections = [
-  {
-    id: 'basics',
-    title: 'Business Basics',
-    description: 'Let\'s start with the fundamentals of your business',
-    questions: [
-      {
-        id: 'business_name',
-        question: 'What is the name of your business?',
-        type: 'text',
-        required: true,
-        placeholder: 'e.g., Acme Corporation'
-      },
-      {
-        id: 'business_tagline',
-        question: 'What is your business tagline or slogan? (optional)',
-        type: 'text',
-        required: false,
-        placeholder: 'e.g., Innovation for a better tomorrow'
-      },
-      {
-        id: 'business_type',
-        question: 'What type of business are you creating?',
-        type: 'select',
-        required: true,
-        options: [
-          'Sole Proprietorship',
-          'Partnership',
-          'Limited Liability Company (LLC)',
-          'Corporation',
-          'S Corporation',
-          'Non-profit'
-        ]
-      },
-      {
-        id: 'business_stage',
-        question: 'What stage is your business in?',
-        type: 'radio',
-        required: true,
-        options: [
-          'Idea/Concept',
-          'Startup (0-2 years)',
-          'Growth (2-5 years)',
-          'Established (5+ years)'
-        ]
-      }
-    ]
-  },
-  {
-    id: 'product',
-    title: 'Products & Services',
-    description: 'Tell us about what your business offers to customers',
-    questions: [
-      {
-        id: 'product_description',
-        question: 'Describe your main product or service in detail.',
-        type: 'textarea',
-        required: true,
-        placeholder: 'Provide a comprehensive description of what you sell or offer'
-      },
-      {
-        id: 'value_proposition',
-        question: 'What is your unique value proposition? What makes your offering different?',
-        type: 'textarea',
-        required: true,
-        placeholder: 'Explain what sets you apart from competitors'
-      },
-      {
-        id: 'pricing_strategy',
-        question: 'What is your pricing strategy?',
-        type: 'select',
-        required: true,
-        options: [
-          'Premium/Luxury',
-          'Mid-market',
-          'Budget/Economy',
-          'Freemium',
-          'Subscription-based',
-          'Value-based',
-          'Cost-plus',
-          'Other'
-        ]
-      },
-      {
-        id: 'product_stage',
-        question: 'What stage of development is your product/service in?',
-        type: 'radio',
-        required: true,
-        options: [
-          'Concept/Idea',
-          'Prototype/MVP',
-          'Beta/Testing',
-          'Launched/Available',
-          'Established with iterative improvements'
-        ]
-      }
-    ]
-  },
-  {
-    id: 'market',
-    title: 'Market Analysis',
-    description: 'Understand your market, customers, and competition',
-    questions: [
-      {
-        id: 'target_audience',
-        question: 'Who is your target customer or audience?',
-        type: 'textarea',
-        required: true,
-        placeholder: 'Describe your ideal customer in detail (demographics, behaviors, needs)'
-      },
-      {
-        id: 'market_size',
-        question: 'What is the size of your target market?',
-        type: 'select',
-        required: true,
-        options: [
-          'Small niche market (Under $10M)',
-          'Medium market ($10M-$100M)',
-          'Large market ($100M-$1B)',
-          'Massive market (Over $1B)'
-        ]
-      },
-      {
-        id: 'competitors',
-        question: 'Who are your main competitors?',
-        type: 'textarea',
-        required: true,
-        placeholder: 'List your top competitors and briefly describe them'
-      },
-      {
-        id: 'competitive_advantage',
-        question: 'What is your competitive advantage?',
-        type: 'checkbox',
-        required: true,
-        options: [
-          'Proprietary technology',
-          'Unique features',
-          'Lower price',
-          'Better quality',
-          'Superior customer service',
-          'Stronger brand',
-          'Better location',
-          'Exclusive partnerships',
-          'Other'
-        ]
-      }
-    ]
-  },
-  {
-    id: 'strategy',
-    title: 'Business Strategy',
-    description: 'Define your goals and how you plan to achieve them',
-    questions: [
-      {
-        id: 'mission_statement',
-        question: 'What is your mission statement?',
-        type: 'textarea',
-        required: true,
-        placeholder: 'The purpose and core values that guide your business'
-      },
-      {
-        id: 'vision_statement',
-        question: 'What is your vision statement?',
-        type: 'textarea',
-        required: true,
-        placeholder: 'Your aspirational description of what you want to achieve in the future'
-      },
-      {
-        id: 'short_term_goals',
-        question: 'What are your short-term goals (1 year)?',
-        type: 'textarea',
-        required: true,
-        placeholder: 'List specific, measurable goals for the next year'
-      },
-      {
-        id: 'long_term_goals',
-        question: 'What are your long-term goals (3-5 years)?',
-        type: 'textarea',
-        required: true,
-        placeholder: 'List your strategic objectives for the next 3-5 years'
-      }
-    ]
-  },
-  {
-    id: 'financials',
-    title: 'Financial Projections',
-    description: 'Understand the financial aspects of your business',
-    questions: [
-      {
-        id: 'startup_costs',
-        question: 'What are your estimated startup costs?',
-        type: 'text',
-        required: true,
-        placeholder: 'e.g., $50,000'
-      },
-      {
-        id: 'revenue_model',
-        question: 'What is your revenue model?',
-        type: 'select',
-        required: true,
-        options: [
-          'Direct sales',
-          'Subscription',
-          'Freemium',
-          'Licensing',
-          'Advertising',
-          'Affiliate marketing',
-          'Marketplace/Commission',
-          'Mixed model',
-          'Other'
-        ]
-      },
-      {
-        id: 'breakeven_projection',
-        question: 'When do you expect to break even?',
-        type: 'select',
-        required: true,
-        options: [
-          'Less than 6 months',
-          '6-12 months',
-          '12-18 months',
-          '18-24 months',
-          '2-3 years',
-          '3-5 years',
-          'More than 5 years'
-        ]
-      },
-      {
-        id: 'funding_needed',
-        question: 'Do you need external funding?',
-        type: 'radio',
-        required: true,
-        options: [
-          'No, self-funded/bootstrapped',
-          'Yes, seeking seed/angel investment',
-          'Yes, seeking venture capital',
-          'Yes, seeking bank loans',
-          'Yes, seeking government grants',
-          'Yes, crowdfunding',
-          'Other'
-        ]
-      }
-    ]
-  }
-];
+import { useAuth } from '../context/AuthProvider';
+import { 
+  getTemplates, 
+  createBusinessPlan, 
+  getQuestionnaireSections, 
+  getBusinessPlan, 
+  saveQuestionnaireAnswers, 
+  Template, 
+  QuestionnaireSection
+} from '../api/businessPlans';
 
 const QuestionnaireWizard: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
+  const { user } = useAuth();
   
   // Responsive breakpoints
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   
+  // State
   const [activeStep, setActiveStep] = useState(0);
-  const [selectedTemplate, setSelectedTemplate] = useState('');
+  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
   const [showTemplatePicker, setShowTemplatePicker] = useState(true);
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
@@ -352,55 +91,207 @@ const QuestionnaireWizard: React.FC = () => {
   const [showAutoSaveIndicator, setShowAutoSaveIndicator] = useState(false);
   const [openExitDialog, setOpenExitDialog] = useState(false);
   
-  // Load data if editing existing plan
+  // Loading states
+  const [loading, setLoading] = useState({
+    templates: false,
+    plan: false,
+    creating: false,
+    saving: false
+  });
+  
+  // Data states
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [questionnaireSections, setQuestionnaireSections] = useState<QuestionnaireSection[]>([]);
+  const [businessPlanId, setBusinessPlanId] = useState<string | null>(null);
+  const [businessPlanTitle, setBusinessPlanTitle] = useState<string>('');
+  const [businessPlanDescription, setBusinessPlanDescription] = useState<string>('');
+  
+  // Error states
+  const [error, setError] = useState<string | null>(null);
+  
+  // Load templates on component mount
+  useEffect(() => {
+    const loadTemplates = async () => {
+      setLoading(prev => ({ ...prev, templates: true }));
+      try {
+        const { templates: templateData, error: templateError } = await getTemplates();
+        if (templateError) throw templateError;
+        setTemplates(templateData);
+      } catch (error) {
+        console.error('Error loading templates:', error);
+        setError('Failed to load templates. Please try again later.');
+      } finally {
+        setLoading(prev => ({ ...prev, templates: false }));
+      }
+    };
+    
+    loadTemplates();
+  }, []);
+  
+  // Load existing business plan if ID is provided
   useEffect(() => {
     const planId = location.state?.planId;
     
     if (planId) {
-      // Mock loading existing plan data
-      setShowTemplatePicker(false);
-      setSelectedTemplate('startup');
-      setAnswers({
-        business_name: 'Acme Tech Solutions',
-        business_tagline: 'Innovating for tomorrow',
-        business_type: 'Limited Liability Company (LLC)',
-        business_stage: 'Startup (0-2 years)',
-        // ... other pre-filled answers would be loaded here
-      });
+      setLoading(prev => ({ ...prev, plan: true }));
+      
+      const loadBusinessPlan = async () => {
+        try {
+          const { plan, error } = await getBusinessPlan(planId);
+          if (error) throw error;
+          
+          if (plan) {
+            setBusinessPlanId(plan.id);
+            setBusinessPlanTitle(plan.title);
+            setBusinessPlanDescription(plan.description || '');
+            setSelectedTemplate(plan.templateId || '');
+            setShowTemplatePicker(false);
+            
+            // Load questionnaire sections
+            if (plan.templateId) {
+              await loadQuestionnaireSections(plan.templateId);
+            }
+            
+            // Set answers if available
+            if (plan.answers) {
+              const formattedAnswers: Record<string, any> = {};
+              
+              // Format answers based on type
+              Object.entries(plan.answers).forEach(([questionId, answer]) => {
+                // Try to parse JSON string answers 
+                if (typeof answer === 'string' && (answer.startsWith('[') || answer.startsWith('{'))) {
+                  try {
+                    formattedAnswers[questionId] = JSON.parse(answer);
+                  } catch (e) {
+                    formattedAnswers[questionId] = answer;
+                  }
+                } else {
+                  formattedAnswers[questionId] = answer;
+                }
+              });
+              
+              setAnswers(formattedAnswers);
+            }
+          }
+        } catch (error) {
+          console.error('Error loading business plan:', error);
+          setError('Failed to load business plan. Please try again.');
+        } finally {
+          setLoading(prev => ({ ...prev, plan: false }));
+        }
+      };
+      
+      loadBusinessPlan();
     }
   }, [location.state]);
   
-  const handleSelectTemplate = (templateId: string) => {
-    setSelectedTemplate(templateId);
-    setShowTemplatePicker(false);
+  // Load questionnaire sections when template is selected
+  const loadQuestionnaireSections = async (templateId: string) => {
+    try {
+      const { sections, error } = await getQuestionnaireSections(templateId);
+      if (error) throw error;
+      setQuestionnaireSections(sections);
+    } catch (error) {
+      console.error('Error loading questionnaire sections:', error);
+      setError('Failed to load questionnaire sections. Please try again.');
+      return false;
+    }
+    return true;
   };
   
+  // Handle template selection
+  const handleSelectTemplate = async (templateId: string) => {
+    setSelectedTemplate(templateId);
+    
+    // Load questionnaire sections
+    const success = await loadQuestionnaireSections(templateId);
+    if (success) {
+      setShowTemplatePicker(false);
+    }
+  };
+  
+  // Handle business plan creation
+  const handleCreateBusinessPlan = async () => {
+    if (!user?.id || !selectedTemplate || !businessPlanTitle) {
+      setError('Missing required information to create business plan');
+      return;
+    }
+    
+    setLoading(prev => ({ ...prev, creating: true }));
+    try {
+      const { plan, error } = await createBusinessPlan(
+        user.id,
+        selectedTemplate,
+        businessPlanTitle,
+        businessPlanDescription || undefined
+      );
+      
+      if (error) throw error;
+      
+      if (plan) {
+        setBusinessPlanId(plan.id);
+        dispatch(showNotification({
+          message: 'Business plan created successfully!',
+          type: 'success'
+        }));
+      }
+    } catch (error) {
+      console.error('Error creating business plan:', error);
+      setError('Failed to create business plan. Please try again.');
+    } finally {
+      setLoading(prev => ({ ...prev, creating: false }));
+    }
+  };
+  
+  // Setup business plan when first moving away from template picker
+  useEffect(() => {
+    const setupBusinessPlan = async () => {
+      if (!showTemplatePicker && !businessPlanId && user?.id) {
+        // Need to create the business plan
+        await handleCreateBusinessPlan();
+      }
+    };
+    
+    setupBusinessPlan();
+  }, [showTemplatePicker, businessPlanId, user?.id]);
+  
+  // Handle step change
   const handleStepChange = (step: number) => {
     setActiveStep(step);
   };
   
+  // Navigate to next step
   const handleNext = () => {
     if (activeStep < questionnaireSections.length - 1) {
       setActiveStep(activeStep + 1);
     } else {
       // All steps complete, navigate to editor
-      navigate('/editor');
+      navigate('/editor', { state: { planId: businessPlanId } });
     }
   };
   
+  // Navigate to previous step
   const handleBack = () => {
     setActiveStep(Math.max(0, activeStep - 1));
   };
   
+  // Handle answer changes
   const handleAnswerChange = (questionId: string, value: any) => {
-    setAnswers({
+    const newAnswers = {
       ...answers,
       [questionId]: value
-    });
+    };
+    
+    setAnswers(newAnswers);
+    
+    // Save to database if we have a business plan ID
+    if (businessPlanId) {
+      saveAnswer(businessPlanId, questionId, value);
+    }
     
     // Simulate saving answer to state
     dispatch(updateQuestionAnswer({
-      sectionId: questionnaireSections[activeStep].id,
+      sectionId: questionnaireSections[activeStep]?.id || '',
       questionId,
       answer: typeof value === 'string' ? value : JSON.stringify(value)
     }));
@@ -408,9 +299,19 @@ const QuestionnaireWizard: React.FC = () => {
     // Show auto-save indicator
     setAutoSaveStatus('saving');
     setShowAutoSaveIndicator(true);
+  };
+  
+  // Save answer to database
+  const saveAnswer = async (planId: string, questionId: string, value: any) => {
+    setLoading(prev => ({ ...prev, saving: true }));
     
-    // Simulate auto-save delay
-    setTimeout(() => {
+    try {
+      const answerObj = { [questionId]: value };
+      
+      const { saved, error } = await saveQuestionnaireAnswers(planId, answerObj);
+      
+      if (error) throw error;
+      
       setAutoSaveStatus('saved');
       dispatch(autoSaveDone());
       
@@ -418,9 +319,17 @@ const QuestionnaireWizard: React.FC = () => {
       setTimeout(() => {
         setShowAutoSaveIndicator(false);
       }, 2000);
-    }, 1000);
+      
+    } catch (error) {
+      console.error('Error saving answer:', error);
+      setAutoSaveStatus('error');
+      dispatch(autoSaveError());
+    } finally {
+      setLoading(prev => ({ ...prev, saving: false }));
+    }
   };
   
+  // Handle checkbox changes
   const handleCheckboxChange = (questionId: string, option: string, checked: boolean) => {
     const currentValues = answers[questionId] || [];
     let newValues;
@@ -434,15 +343,20 @@ const QuestionnaireWizard: React.FC = () => {
     handleAnswerChange(questionId, newValues);
   };
   
+  // Open AI dialog
   const handleOpenAIDialog = () => {
     setOpenAIDialog(true);
   };
   
+  // Close AI dialog
   const handleCloseAIDialog = () => {
     setOpenAIDialog(false);
   };
   
+  // Generate answers with AI
   const handleGenerateWithAI = () => {
+    if (!businessPlanId) return;
+    
     setGeneratingAI(true);
     
     // Simulate AI generation
@@ -454,13 +368,15 @@ const QuestionnaireWizard: React.FC = () => {
       currentSection.questions.forEach(question => {
         if (question.type === 'text' || question.type === 'textarea') {
           aiGenerated[question.id] = `AI-generated response for ${question.question}`;
-        } else if ((question.type === 'select' || question.type === 'radio') && question.options) {
-          aiGenerated[question.id] = question.options[Math.floor(Math.random() * question.options.length)];
-        } else if (question.type === 'checkbox' && question.options) {
+        } else if (question.type === 'select' || question.type === 'radio') {
+          aiGenerated[question.id] = question.options?.[Math.floor(Math.random() * (question.options?.length || 1))];
+        } else if (question.type === 'checkbox') {
           // Select random number of options
-          const numOptions = Math.floor(Math.random() * (question.options.length - 1)) + 1;
-          const shuffled = [...question.options].sort(() => 0.5 - Math.random());
-          aiGenerated[question.id] = shuffled.slice(0, numOptions);
+          if (question.options && question.options.length > 0) {
+            const numOptions = Math.floor(Math.random() * (question.options.length - 1)) + 1;
+            const shuffled = [...question.options].sort(() => 0.5 - Math.random());
+            aiGenerated[question.id] = shuffled.slice(0, numOptions);
+          }
         }
       });
       
@@ -470,26 +386,63 @@ const QuestionnaireWizard: React.FC = () => {
         ...aiGenerated
       });
       
-      // Show notification
-      dispatch(showNotification({
-        message: 'AI successfully generated responses for this section',
-        type: 'success'
-      }));
+      // Save AI generated answers
+      if (businessPlanId) {
+        saveQuestionnaireAnswers(businessPlanId, aiGenerated)
+          .then(() => {
+            // Log AI generation activity
+            supabase
+              .from('user_activities')
+              .insert([{
+                user_id: user?.id,
+                business_plan_id: businessPlanId,
+                activity_type: 'ai_generation',
+                description: `Generated AI responses for ${currentSection.title} section`
+              }])
+              .then(() => {
+                // Show notification
+                dispatch(showNotification({
+                  message: 'AI successfully generated responses for this section',
+                  type: 'success'
+                }));
+              });
+          })
+          .catch(error => {
+            console.error('Error saving AI generated answers:', error);
+            dispatch(showNotification({
+              message: 'Error saving AI generated answers',
+              type: 'error'
+            }));
+          });
+      }
       
       setGeneratingAI(false);
       setOpenAIDialog(false);
     }, 3000);
   };
   
+  // Handle exit
   const handleExit = () => {
     setOpenExitDialog(true);
   };
   
+  // Confirm exit
   const confirmExit = () => {
     // Navigate back to dashboard
     navigate('/dashboard');
   };
   
+  // Business plan title change
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBusinessPlanTitle(e.target.value);
+  };
+  
+  // Business plan description change
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBusinessPlanDescription(e.target.value);
+  };
+  
+  // Render mobile stepper
   const renderMobileStepper = () => (
     <MobileStepper
       variant="dots"
@@ -534,8 +487,16 @@ const QuestionnaireWizard: React.FC = () => {
     />
   );
   
+  // Render questionnaire content
   const renderQuestionnaireContent = () => {
     const currentSection = questionnaireSections[activeStep];
+    if (!currentSection) {
+      return (
+        <Box sx={{ textAlign: 'center', py: 4 }}>
+          <Typography variant="h6">No questions available for this section.</Typography>
+        </Box>
+      );
+    }
     
     return (
       <Box>
@@ -588,7 +549,7 @@ const QuestionnaireWizard: React.FC = () => {
                   id={question.id}
                   fullWidth
                   variant="outlined"
-                  placeholder={question.placeholder}
+                  placeholder={question.placeholder || undefined}
                   value={answers[question.id] || ''}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                   required={question.required}
@@ -609,7 +570,7 @@ const QuestionnaireWizard: React.FC = () => {
                   minRows={isMobile ? 2 : 3}
                   maxRows={isMobile ? 4 : 6}
                   variant="outlined"
-                  placeholder={question.placeholder}
+                  placeholder={question.placeholder || undefined}
                   value={answers[question.id] || ''}
                   onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                   required={question.required}
@@ -622,7 +583,7 @@ const QuestionnaireWizard: React.FC = () => {
                 />
               )}
               
-              {question.type === 'select' && (
+              {question.type === 'select' && question.options && (
                 <FormControl 
                   fullWidth 
                   required={question.required}
@@ -643,7 +604,7 @@ const QuestionnaireWizard: React.FC = () => {
                     <MenuItem value="" disabled>
                       <em>Select an option</em>
                     </MenuItem>
-                    {question.options && question.options.map((option) => (
+                    {question.options.map((option) => (
                       <MenuItem key={option} value={option}>
                         {option}
                       </MenuItem>
@@ -652,7 +613,7 @@ const QuestionnaireWizard: React.FC = () => {
                 </FormControl>
               )}
               
-              {question.type === 'radio' && (
+              {question.type === 'radio' && question.options && (
                 <FormControl 
                   component="fieldset" 
                   required={question.required} 
@@ -668,7 +629,7 @@ const QuestionnaireWizard: React.FC = () => {
                       }
                     }}
                   >
-                    {question.options && question.options.map((option) => (
+                    {question.options.map((option) => (
                       <FormControlLabel
                         key={option}
                         value={option}
@@ -698,15 +659,15 @@ const QuestionnaireWizard: React.FC = () => {
                 </FormControl>
               )}
               
-              {question.type === 'checkbox' && (
+              {question.type === 'checkbox' && question.options && (
                 <FormControl component="fieldset" required={question.required} sx={{ width: '100%' }}>
                   <FormGroup>
-                    {question.options && question.options.map((option) => (
+                    {question.options.map((option) => (
                       <FormControlLabel
                         key={option}
                         control={
                           <Checkbox
-                            checked={answers[question.id]?.includes(option) || false}
+                            checked={Array.isArray(answers[question.id]) && answers[question.id]?.includes(option) || false}
                             onChange={(e) => handleCheckboxChange(question.id, option, e.target.checked)}
                             sx={{ 
                               padding: isMobile ? 0.5 : 1,
@@ -739,6 +700,7 @@ const QuestionnaireWizard: React.FC = () => {
     );
   };
   
+  // Render template picker
   const renderTemplatePicker = () => (
     <Box>
       <Box sx={{ mb: { xs: 3, md: 4 } }}>
@@ -756,61 +718,102 @@ const QuestionnaireWizard: React.FC = () => {
         </Typography>
       </Box>
       
-      <Grid container spacing={2}>
-        {businessPlanTemplates.map((template) => (
-          <Grid item xs={12} sm={6} md={4} key={template.id}>
-            <Card 
-              sx={{ 
-                cursor: 'pointer',
-                height: '100%',
-                transition: 'all 0.2s',
-                border: selectedTemplate === template.id 
-                  ? `2px solid ${theme.palette.primary.main}` 
-                  : '2px solid transparent',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: 3,
-                },
-              }}
-            >
-              <CardActionArea 
-                onClick={() => setSelectedTemplate(template.id)}
-                sx={{ height: '100%' }}
-              >
-                <Box sx={{ p: { xs: 2, sm: 3 } }}>
-                  <Typography variant="h6" component="h3" sx={{ 
-                    fontWeight: 'bold', 
-                    mb: 1,
-                    fontSize: { xs: '1rem', sm: '1.25rem' }
-                  }}>
-                    {template.name}
-                  </Typography>
-                  <Typography 
-                    variant="body2" 
-                    color="text.secondary" 
-                    sx={{ 
-                      mb: 2,
-                      fontSize: { xs: '0.75rem', sm: '0.875rem' }
-                    }}
+      <Box sx={{ mb: 4 }}>
+        <TextField
+          fullWidth
+          label="Business Plan Title"
+          placeholder="Enter a title for your business plan"
+          value={businessPlanTitle}
+          onChange={handleTitleChange}
+          required
+          sx={{ mb: 2 }}
+        />
+        
+        <TextField
+          fullWidth
+          label="Description (optional)"
+          placeholder="Briefly describe your business plan"
+          value={businessPlanDescription}
+          onChange={handleDescriptionChange}
+          multiline
+          rows={2}
+        />
+      </Box>
+      
+      {loading.templates ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <>
+          {error && (
+            <Alert severity="error" sx={{ mb: 3 }}>
+              {error}
+            </Alert>
+          )}
+          
+          <Grid container spacing={2}>
+            {templates.map((template) => (
+              <Grid item xs={12} sm={6} md={4} key={template.id}>
+                <Card 
+                  sx={{ 
+                    cursor: 'pointer',
+                    height: '100%',
+                    transition: 'all 0.2s',
+                    border: selectedTemplate === template.id 
+                      ? `2px solid ${theme.palette.primary.main}` 
+                      : '2px solid transparent',
+                    '&:hover': {
+                      transform: 'translateY(-4px)',
+                      boxShadow: 3,
+                    },
+                  }}
+                >
+                  <CardActionArea 
+                    onClick={() => setSelectedTemplate(template.id)}
+                    sx={{ height: '100%' }}
                   >
-                    {template.description}
-                  </Typography>
-                  <Divider sx={{ mb: 2 }} />
-                  <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                    Includes {template.sections.length} sections
-                  </Typography>
-                </Box>
-              </CardActionArea>
-            </Card>
+                    <Box sx={{ p: { xs: 2, sm: 3 } }}>
+                      <Typography variant="h6" component="h3" sx={{ 
+                        fontWeight: 'bold', 
+                        mb: 1,
+                        fontSize: { xs: '1rem', sm: '1.25rem' }
+                      }}>
+                        {template.name}
+                      </Typography>
+                      <Typography 
+                        variant="body2" 
+                        color="text.secondary" 
+                        sx={{ 
+                          mb: 2,
+                          fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                        }}
+                      >
+                        {template.description}
+                      </Typography>
+                      <Divider sx={{ mb: 2 }} />
+                      <Typography variant="caption" color="text.secondary" sx={{ fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                        Includes {template.sections.length} sections
+                      </Typography>
+                    </Box>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        </>
+      )}
       
       <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
         <Button
           variant="contained"
-          disabled={!selectedTemplate}
-          onClick={() => setShowTemplatePicker(false)}
+          disabled={!selectedTemplate || !businessPlanTitle || loading.creating}
+          onClick={() => {
+            if (selectedTemplate) {
+              // Business plan will be created when moving away from template picker
+              setShowTemplatePicker(false);
+            }
+          }}
           size={isMobile ? "medium" : "large"}
           sx={{ 
             px: { xs: 3, sm: 4 },
@@ -818,7 +821,11 @@ const QuestionnaireWizard: React.FC = () => {
             borderRadius: 2
           }}
         >
-          Continue with This Template
+          {loading.creating ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            'Continue with This Template'
+          )}
         </Button>
       </Box>
     </Box>
@@ -853,7 +860,7 @@ const QuestionnaireWizard: React.FC = () => {
                 color="text.secondary"
                 sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}
               >
-                {businessPlanTemplates.find(t => t.id === selectedTemplate)?.name || 'Custom'} Template
+                {templates.find(t => t.id === selectedTemplate)?.name || 'Custom'} Template
               </Typography>
             )}
           </Box>
@@ -925,6 +932,16 @@ const QuestionnaireWizard: React.FC = () => {
         </Box>
         
         {/* Main content */}
+        {error && (
+          <Alert 
+            severity="error" 
+            sx={{ mb: 3 }}
+            onClose={() => setError(null)}
+          >
+            {error}
+          </Alert>
+        )}
+        
         {showTemplatePicker ? (
           renderTemplatePicker()
         ) : (
@@ -970,9 +987,6 @@ const QuestionnaireWizard: React.FC = () => {
                   </Stepper>
                 </Paper>
               </Grid>
-              
-              /* Horizontal Step Indicator for Tablet */
-              
             )}
             
             {/* Tablet Stepper - Horizontal */}
@@ -1008,7 +1022,13 @@ const QuestionnaireWizard: React.FC = () => {
             {/* Questions */}
             <Grid item xs={12} md={9}>
               <Paper sx={{ p: { xs: 2, sm: 3, md: 4 }, borderRadius: 2 }}>
-                {renderQuestionnaireContent()}
+                {loading.plan ? (
+                  <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+                    <CircularProgress />
+                  </Box>
+                ) : (
+                  renderQuestionnaireContent()
+                )}
                 
                 <Divider sx={{ mt: { xs: 2, md: 4 }, mb: { xs: 2, sm: 2 } }} />
                 
@@ -1192,6 +1212,23 @@ const QuestionnaireWizard: React.FC = () => {
             </Button>
           </DialogActions>
         </Dialog>
+        
+        {/* Error Snackbar */}
+        <Snackbar
+          open={!!error}
+          autoHideDuration={6000}
+          onClose={() => setError(null)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+        >
+          <Alert 
+            onClose={() => setError(null)} 
+            severity="error"
+            variant="filled"
+            sx={{ width: '100%' }}
+          >
+            {error}
+          </Alert>
+        </Snackbar>
       </Box>
     </AnimatedWrapper>
   );

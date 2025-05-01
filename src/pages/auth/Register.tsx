@@ -27,6 +27,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import { signUp } from '../../api/auth';
 
 interface RegisterFormInputs {
   firstName: string;
@@ -85,12 +86,31 @@ const Register: React.FC = () => {
     setIsLoading(true);
     
     try {
-      // Mock API call - replace with actual API
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Call the signUp function from auth.ts
+      const { user, error } = await signUp({
+        email: data.email,
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        accountType: data.accountType,
+        companyName: data.companyName,
+        jobTitle: data.jobTitle
+      });
       
-      // Mock success
-      console.log('Registration data:', data);
-      navigate('/login');
+      if (error) {
+        throw error;
+      }
+      
+      if (user) {
+        // Registration successful
+        navigate('/login', { 
+          state: { 
+            message: 'Registration successful. Please log in with your credentials.' 
+          } 
+        });
+      } else {
+        throw new Error('Failed to create account. Please try again.');
+      }
     } catch (error) {
       if (error instanceof Error) {
         setRegistrationError(error.message);

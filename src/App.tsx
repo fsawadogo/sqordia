@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'r
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
 import { Provider } from 'react-redux';
 import { store } from './store';
+import AuthProvider from './context/AuthProvider';
 
 // Layouts
 import MainLayout from './layouts/MainLayout';
@@ -24,6 +25,7 @@ import NotFound from './pages/NotFound';
 // Components
 import PageTransition from './components/PageTransition';
 import ScrollToTop from './components/ScrollToTop';
+import { useAuth } from './context/AuthProvider';
 
 // Theme and darkmode configuration
 const lightTheme = createTheme({
@@ -192,19 +194,42 @@ const darkTheme = createTheme({
   },
 });
 
-// Modified auth context to always return true
-const isAuthenticated = () => {
-  return true; // Always authenticated
-};
-
 // ProtectedRoute component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  return <>{children}</>; // Always allow access
+  const { isAuthenticated, loading } = useAuth();
+  const location = useLocation();
+  
+  if (loading) {
+    // You could render a loading spinner here
+    return <div>Loading...</div>;
+  }
+  
+  if (!isAuthenticated) {
+    // Redirect to login, but save the current location for redirect after login
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  
+  return <>{children}</>;
 };
 
 // AdminRoute component
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
-  return <>{children}</>; // Always allow access
+  const { user, isAuthenticated, loading } = useAuth();
+  const location = useLocation();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (user?.role !== 'administrator') {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <>{children}</>;
 };
 
 // Create a context for the dark mode
@@ -235,29 +260,53 @@ const AppContent = ({ darkMode, toggleDarkMode }: { darkMode: boolean, toggleDar
           <Route element={<MainLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}>
             <Route 
               path="/dashboard" 
-              element={<Dashboard />} 
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } 
             />
             <Route 
               path="/profile" 
-              element={<Profile />} 
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } 
             />
             <Route 
               path="/questionnaire" 
-              element={<QuestionnaireWizard />} 
+              element={
+                <ProtectedRoute>
+                  <QuestionnaireWizard />
+                </ProtectedRoute>
+              } 
             />
             <Route 
               path="/editor" 
-              element={<BusinessPlanEditor />} 
+              element={
+                <ProtectedRoute>
+                  <BusinessPlanEditor />
+                </ProtectedRoute>
+              } 
             />
             <Route 
               path="/subscription" 
-              element={<SubscriptionPlans />} 
+              element={
+                <ProtectedRoute>
+                  <SubscriptionPlans />
+                </ProtectedRoute>
+              } 
             />
             
             {/* Admin routes */}
             <Route 
               path="/admin" 
-              element={<AdminDashboard />} 
+              element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              } 
             />
           </Route>
           
@@ -317,9 +366,11 @@ function App() {
       <ThemeContext.Provider value={themeContextValue}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Router>
-            <AppContent darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-          </Router>
+          <AuthProvider>
+            <Router>
+              <AppContent darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            </Router>
+          </AuthProvider>
         </ThemeProvider>
       </ThemeContext.Provider>
     </Provider>

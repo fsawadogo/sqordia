@@ -258,56 +258,14 @@ const AppContent = ({ darkMode, toggleDarkMode }: { darkMode: boolean, toggleDar
           
           {/* Protected routes */}
           <Route element={<MainLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}>
-            <Route 
-              path="/dashboard" 
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/profile" 
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/questionnaire" 
-              element={
-                <ProtectedRoute>
-                  <QuestionnaireWizard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/editor" 
-              element={
-                <ProtectedRoute>
-                  <BusinessPlanEditor />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/subscription" 
-              element={
-                <ProtectedRoute>
-                  <SubscriptionPlans />
-                </ProtectedRoute>
-              } 
-            />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/questionnaire" element={<QuestionnaireWizard />} />
+            <Route path="/editor" element={<BusinessPlanEditor />} />
+            <Route path="/subscription" element={<SubscriptionPlans />} />
             
             {/* Admin routes */}
-            <Route 
-              path="/admin" 
-              element={
-                <AdminRoute>
-                  <AdminDashboard />
-                </AdminRoute>
-              } 
-            />
+            <Route path="/admin/*" element={<AdminDashboard />} />
           </Route>
           
           {/* 404 route */}

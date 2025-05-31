@@ -10,9 +10,21 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  user: null,
-  token: localStorage.getItem('token'),
-  isAuthenticated: localStorage.getItem('auth') === 'true',
+  user: {
+    id: 'default-user',
+    email: 'admin@example.com',
+    firstName: 'Admin',
+    lastName: 'User',
+    role: 'administrator',
+    avatarUrl: null,
+    subscriptionTier: 'premium',
+    company: 'Default Company',
+    jobTitle: 'Administrator',
+    bio: '',
+    phone: ''
+  },
+  token: 'mock-jwt-token',
+  isAuthenticated: true,
   loading: false,
   error: null,
 };
